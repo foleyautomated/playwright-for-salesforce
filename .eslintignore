@@ -1,0 +1,10 @@
+tsconfig.json
+node_modules/
+/test-results/
+./playwright-report/
+/playwright/.cache/
+.env
+storageState.json
+/test-results/
+./playwright-report/
+/playwright/.cache/

@@ -1,0 +1,27 @@
+{
+  "name": "playwright-salesforce",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {},
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "devDependencies": {
+    "@faker-js/faker": "^8.4.1",
+    "@playwright/test": "^1.41.2",
+    "@types/dotenv-safe": "^8.1.6",
+    "@types/jsforce": "^1.11.5",
+    "@types/node": "^20.11.17",
+    "monocart-reporter": "^2.3.1"
+  },
+  "dependencies": {
+    "@typescript-eslint/eslint-plugin": "^7.0.2",
+    "@typescript-eslint/parser": "^7.0.2",
+    "dotenv": "^16.4.4",
+    "dotenv-safe": "^9.0.0",
+    "eslint": "^8.56.0",
+    "jsforce": "^1.11.1",
+    "pino": "^8.18.0"
+  }
+}

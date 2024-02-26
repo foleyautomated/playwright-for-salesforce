@@ -6,6 +6,11 @@
         "strict": true,
         "allowJs": false,
         "noEmit": true,
-        "noImplicitOverride": true
-    }
+        "noImplicitOverride": true,
+        "experimentalDecorators": true
+    },
+    "include" : [
+        "./src/**/*.ts",
+        "./lib/**/*.ts"
+    ]
 }

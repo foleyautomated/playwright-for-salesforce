@@ -1,0 +1,12 @@
+{
+  "$schema": "https://raw.githubusercontent.com/ChuckJonas/ts-force/master/ts-force-gen/ts-force-config.schema.json",
+  "auth": {
+    "username": "foleyautomated@gmail.com"
+  },
+  "sObjects": [
+      "Account",
+      "Contact",
+      "User"
+    ],
+  "outPath": "./src/generated"
+}

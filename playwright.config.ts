@@ -37,7 +37,7 @@ export default defineConfig({
     trace: 'on-first-retry'
   },
   
-  globalSetup: 'config/globalSetup.ts',
+  globalSetup: 'lib/setup/globalSetup.ts',
   
   /* Configure projects for major browsers */
   projects: [

@@ -5,9 +5,13 @@ import { SalesforceModal } from '../lib/fixtures/salesforceModal';
 import { faker } from '@faker-js/faker';
 import SaleforceConnection from '../lib/api/jsforceauth'
 
-//Cleanup
+
+// test.beforeAll(async () => {
+// });
+
+
 test.afterEach(async ({ page }) => {
-  page.close();
+  await page.close();
 });
 
 

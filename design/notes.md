@@ -32,3 +32,37 @@ npx playwright codegen https://agilitypartners-dev-ed.develop.lightning.force.co
 ## eslint
 `npm i eslint @typescript-eslint/eslint-plugin @typescript-eslint/parser`
  
+
+## Salesforce CLI
+
+
+
+## ts-force
+https://ts-force.gitbook.io/ts-force/getting-started
+https://developer.salesforce.com/tools/salesforcecli
+`npm install @salesforce/cli --global`
+`$ npm install ts-force`
+`$ npm install -D ts-force-gen`
+`npx ts-force-gen -j ts-force-config.json`
+
+
+ ## SF Data Types
+ []fields - "type", "label" //"name" is what sf-force uses in returns
+    #double "Billing Latitude"
+
+    #id "Id"
+
+    #int "Employees"
+
+    #string "Account Name"
+
+    #boolean "Deleted"
+    
+    #reference "Master Record ID"
+    
+    #picklist "Active"
+    - picklistValues[]{label: "something"}
+    
+    #textarea "Description"
+    
+    #date "SLA Expiration Date"

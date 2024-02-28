@@ -23,7 +23,6 @@
     "@typescript-eslint/parser": "^7.0.2",
     "dotenv": "^16.4.4",
     "dotenv-safe": "^9.0.0",
-    "eslint": "^8.56.0",
     "jsforce": "^1.11.1",
     "pino": "^8.18.0",
     "reflect-metadata": "^0.2.1",

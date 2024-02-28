@@ -1,6 +1,6 @@
 import {Page, Locator, expect} from '@playwright/test';
 import { SalesforceBasePage} from './salesforceBasePage';
-import { text } from 'stream/consumers';
+//import { text } from 'stream/consumers';
 import { format } from 'path';
 
 
@@ -23,9 +23,9 @@ export class SalesforceModal
         //The .? at the beginning accomodates occasional '*' salesforce prepends to required feilds
         return new RegExp(`^.?${labelWithoutSpecialCharacters}$`)
     }
-     fieldLabelLocator(label: string) : Locator {
-        const labelLocator = this.page.locator('label') 
-            .filter( {hasText: this.scrubSpecialChararactersAndCreateRegex(label)})
+    fieldLabelLocator(label: string) : Locator {
+        //The 'or' Handles ❄️ Multi-select Label (which is actually a div)
+        const labelLocator = this.page.locator('label').or(this.page.locator("[id*='group-label']")).filter( {hasText: this.scrubSpecialChararactersAndCreateRegex(label)});  
         return labelLocator;
     }
     //Text Field
@@ -51,8 +51,8 @@ export class SalesforceModal
     }
     async fillSearchField(label: string, value: string) {
         //Enter Search Value
-        (this.searchFieldLocator(label)).fill(value);
-        (this.searchFieldLocator(label)).click();
+        await (this.searchFieldLocator(label)).fill(value);
+        await (this.searchFieldLocator(label)).click();
         const option = this.page.locator('lightning-grouped-combobox').getByTitle(value, { exact: true });
         await option.click();
     }
@@ -92,6 +92,76 @@ export class SalesforceModal
         await ( this.dateFieldLocator(label)).fill(formatedDate);
     }
 
+    //Boolean
+    checkboxLocator(label: string) {
+        const fieldLocator = this.page.locator('lightning-primitive-input-checkbox')
+            .filter( {has: this.fieldLabelLocator(label)})
+            .locator('input');
+        return fieldLocator;
+    }
+
+    async fillCheckbox(label: string, value: boolean) {
+        const field = this.checkboxLocator(label);
+        if(value)
+        {
+            await field.check();
+        }
+        else
+        {
+            await field.uncheck();
+        }
+    }
+
+    //Multi-Select
+    multiselectRootLocator(label: string) {
+        const rootLocator = this.page.locator('lightning-dual-listbox')
+            .filter( {has: this.fieldLabelLocator(label) });
+        return rootLocator;
+    }
+    multiselectPsudoColumnHeaderLocator(label: string, psudoColumnName: "Available" | "Chosen") : Locator {
+        const rootLocator = this.multiselectRootLocator(label);
+        const psudoColumnHeaderLocator = rootLocator.locator('span').getByText(psudoColumnName);
+        return psudoColumnHeaderLocator;
+    }
+    multiselectPsudoColumnRootLocator(label: string, psudoColumnName: "Available" | "Chosen") : Locator {
+        const rootLocator = this.multiselectRootLocator(label);
+        const psudoColumnRoot = rootLocator.locator("[class*='dueling-list__column']").filter( {has: this.page.locator('span').getByText(psudoColumnName)})
+        return psudoColumnRoot;
+    }
+    multiselectListItemsLocator(label: string, psudoColumnName: "Available" | "Chosen") : Locator {
+        const psudoColumnRoot = this.multiselectPsudoColumnRootLocator(label, psudoColumnName);
+        const listItemsLocator = psudoColumnRoot.locator("li");
+        return listItemsLocator;
+    }
+    multiselectMoveToButtonLocator(label: string, moveSelectionTo: "Available" | "Chosen" ) : Locator {
+        const rootLocator = this.multiselectRootLocator(label); 
+        const directionButton = rootLocator.locator('button').getByText(`Move selection to ${moveSelectionTo}`);
+        return directionButton;
+    }
+    async multiselectGetPsudoColumnSelections(label: string, psudoColumnName: "Available" | "Chosen") : Promise<string[]> {
+        const listItemsLocator = this.multiselectListItemsLocator(label, psudoColumnName);
+        const items = await listItemsLocator.allTextContents();
+        return items;
+    }
+    async fillMultiSelect(label: string, selections: string[], fromPsudoColumn: "Available" | "Chosen" = "Available") {
+        const toPsudoColumn: "Available" | "Chosen" = fromPsudoColumn == "Available" ? "Chosen" : "Available";
+        const sourceItemsLocator = this.multiselectListItemsLocator(label, fromPsudoColumn);
+        await expect(sourceItemsLocator.first()).toBeVisible();
+        const targetItemsLocator = this.multiselectListItemsLocator(label, toPsudoColumn);
+        const moveToButtonLocator = this.multiselectMoveToButtonLocator(label, toPsudoColumn);
+        for(const selection of selections) {
+            //TODO: Check for Items already selecetd
+            const currentItemLocator = sourceItemsLocator.locator('span').getByText(selection, { exact: true });
+            await currentItemLocator.click();
+            await moveToButtonLocator.click();
+            await expect(targetItemsLocator.locator('span').getByText(selection)).toContainText(selection);
+            
+        }
+        
+    }
+
+
+
 
     //Modal Buttom Button
      bottomButtonLocator(label: string) : Locator {
@@ -100,7 +170,7 @@ export class SalesforceModal
             .locator('button')
         return fieldLocator;
     }
-    async modalBodyLocator() : Promise<Locator> {
+    modalBodyLocator() : Locator {
         const modalHeader = this.page.getByText('h2:has-text("New Account")');
         const modalBody = this.page.locator('div.actionBody').filter({ has: modalHeader });
         console.log(`Modal for ${this.objectName} Located`);

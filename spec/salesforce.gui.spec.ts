@@ -1,4 +1,4 @@
-import { test, expect, request } from '@playwright/test';
+import { test, expect } from '@playwright/test';
 import { SalesforceBasePage } from '../lib/fixtures/salesforceBasePage';
 import { SalesforceRecentlyViewedPage } from '../lib/fixtures/salesForceRecentlyViewedPage';
 import { SalesforceModal } from '../lib/fixtures/salesforceModal';
@@ -19,22 +19,10 @@ test('log into salesforce', async ( { page }) => {
     await page.goto("https://agilitypartners-dev-ed.develop.lightning.force.com/lightning/setup/SetupOneHome/home")
   });
 
-test('Create New Account via API', async () => {
-
-  //TODO - Abstract out API Object creation to use a callback that returns the id
-
-  const conn = await SaleforceConnection.open();
-  const testName =  `Test Site Via API ${Date.now()}`
-  const data = {"Name" : testName};
-  await conn.sobject('Account').create(data);
-  const acct = await conn.query<{Id: string}>(`SELECT FIELDS(ALL) FROM ACCOUNT WHERE Name = '${testName}' LIMIT 200`);
-  expect(acct.records[0].Id).toBeDefined()
-  console.log("ID: " + acct.records[0].Id);
-
-});
-
-
 test('create new Account via GUI', async ( { page }) => {
+    const testName = `Test Name ${Date.now()}`;
+    console.log("Test Name: " + testName);
+
     const sfObjectName: string = 'Account';
     const sfHome = new SalesforceBasePage(page);
     await sfHome.goto();
@@ -42,8 +30,7 @@ test('create new Account via GUI', async ( { page }) => {
     const recentAccounts: SalesforceRecentlyViewedPage = await sfHome.gotoRecentlyViewed(sfObjectName);
     await expect(recentAccounts.page).toHaveTitle(/Recently Viewed/);
     const newAccountModal: SalesforceModal = await recentAccounts.createNew();
-
-    const testName = `Test Name ${Date.now()}`;
+    await newAccountModal.fillCheckbox('IsDavidsFavorite', true);
     await newAccountModal.fillTextField('Account Name', testName);
     await newAccountModal.fillDateInput('SLA Expiration Date', faker.date.future()); 
     await newAccountModal.fillTextArea('Shipping Street', '1234 MyStreet Dr.');
@@ -51,7 +38,7 @@ test('create new Account via GUI', async ( { page }) => {
     await newAccountModal.fillSearchField('Parent Account', 'Davids Swiss Bank Account');
     await newAccountModal.fillCombobox('Upsell Opportunity', 'No');
     await newAccountModal.fillCombobox('Rating', 'Hot');
-
+    await newAccountModal.fillMultiSelect('DavidsMultiSelectField', ["One", "Two", "Three", "Thirty-seven", "Forty", "Forty-one", "Ninety-four"]);
     
     await ( newAccountModal.bottomButtonLocator('Save')).click();
 
@@ -87,6 +74,7 @@ for(const accountName of accounts)
     await newAccountModal.fillTextField('Account Site', `Test Site ${Date.now()}`);
     await newAccountModal.fillSearchField('Parent Account', 'Davids Swiss Bank Account');
     await newAccountModal.fillCombobox('Rating', 'Hot');
+    await newAccountModal.fillMultiSelect('DavidsMultiSelectField', ["One", "Two", "Three"]);
     
     await (newAccountModal.bottomButtonLocator('Save')).click();
 

@@ -5,36 +5,36 @@ import { SalesforceModal } from '../lib/fixtures/salesforceModal';
 import { faker } from '@faker-js/faker';
 import SaleforceConnection from '../lib/api/jsforceauth'
 import * as fs from 'fs';
-import { Account } from '../src/generated';
+import * as acct from '../src/generated';
 
-// test('Create New Account via API', async () => {
+test('Create New Account via API', async () => {
 
-//   //TODO - Abstract out API Object creation to use a callback that returns the id
+  //TODO - Abstract out API Object creation to use a callback that returns the id
 
-//   const conn = await SaleforceConnection.open();
-//   const testName =  `Test Site Via API ${Date.now()}`
-//   const data = {"Name" : testName};
-//   await conn.sobject('Account').create(data);
-//   const acct = await conn.query<{Id: string}>(`SELECT FIELDS(ALL) FROM ACCOUNT WHERE Name = '${testName}' LIMIT 200`);
-//   expect(acct.records[0].Id).toBeDefined()
-//   console.log("ID: " + acct.records[0].Id);
+  const conn = await SaleforceConnection.open();
+  const testName =  `Test Site Via API ${Date.now()}`
+  const data = {"Name" : testName};
+  await conn.sobject('Account').create(data);
+  const acct = await conn.query<{Id: string}>(`SELECT FIELDS(ALL) FROM ACCOUNT WHERE Name = '${testName}' LIMIT 200`);
+  expect(acct.records[0].Id).toBeDefined()
+  console.log("ID: " + acct.records[0].Id);
 
-// });
+});
 
 
-// test('Wowahfdoafeafdjsalfds', async () => {
+test('Wowahfdoafeafdjsalfds', async () => {
 
-//   //TODO - Abstract out API Object creation to use a callback that returns the id
+  //TODO - Abstract out API Object creation to use a callback that returns the id
 
-//   const conn = await SaleforceConnection.open();
-//   const testName =  `Test Site Via API ${Date.now()}`
-//   const data = {"Name" : testName};
-//   await conn.sobject('Account').create(data);
-//   const acct = await conn.query<{Id: string}>(`SELECT FIELDS(ALL) FROM ACCOUNT WHERE Name = '${testName}' LIMIT 200`);
-//   expect(acct.records[0].Id).toBeDefined()
-//   console.log("ID: " + acct.records[0].Id);
+  const conn = await SaleforceConnection.open();
+  const testName =  `Test Site Via API ${Date.now()}`
+  const data = {"Name" : testName};
+  await conn.sobject('Account').create(data);
+  const acct = await conn.query<{Id: string}>(`SELECT FIELDS(ALL) FROM ACCOUNT WHERE Name = '${testName}' LIMIT 200`);
+  expect(acct.records[0].Id).toBeDefined()
+  console.log("ID: " + acct.records[0].Id);
 
-// });
+});
 
 test('test tsforce stuff', async () => {
 
@@ -42,9 +42,9 @@ test('test tsforce stuff', async () => {
 
   const conn = await SaleforceConnection.open();
   const testName =  `Test ts-force ${Date.now()}`;
-  const acc1 = new Account({
-    name: 'hello world',
-  });
+  // const acc1 = new acct.Account({
+  //   name: 'hello world',
+  // });
 
 
 

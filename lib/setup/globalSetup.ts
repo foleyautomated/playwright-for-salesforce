@@ -1,6 +1,6 @@
 import { chromium, expect, type FullConfig } from '@playwright/test';
 import { SalesforceLoginPage} from '../pages/salesforceLoginPage'; 
-import { SalesforceBasePage } from '../fixtures/salesforceBasePage';
+import { SfeBasePage } from '../fixtures/SfBasePage';
 
 
 async function globalSetup(config: FullConfig) {
@@ -15,7 +15,7 @@ async function globalSetup(config: FullConfig) {
   await page.goto(baseURL!);
   const salesforcePage = new SalesforceLoginPage(page);
   await salesforcePage.login(process.env.SALESFORCE_USERNAME!, process.env.SALESFORCE_PASSWORD!);
-  const salesforceSettupPage = new SalesforceBasePage(page);
+  const salesforceSettupPage = new SfeBasePage(page);
   await salesforceSettupPage.waitForTopToolbarToLoad();
   await expect(page).toHaveURL(/lightning/);
 

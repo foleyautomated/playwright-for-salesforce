@@ -1,8 +1,8 @@
 // https://agilitypartners-dev-ed.develop.lightning.force.com/lightning/page/home
 import { Locator, Page } from "@playwright/test";
-import { SalesforceBasePage } from "./salesforceBasePage";
+import { SfeBasePage } from "./SfBasePage";
 
-export class SalesforceLightningHomePage extends SalesforceBasePage
+export class SfLightningHomePage extends SfeBasePage
 {
     readonly sellerHomeHeader: Locator;
     constructor(page: Page) {

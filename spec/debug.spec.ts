@@ -1,7 +1,7 @@
 import { test, expect, request } from '@playwright/test';
-import { SalesforceBasePage } from '../lib/fixtures/salesforceBasePage';
-import { SalesforceRecentlyViewedPage } from '../lib/fixtures/salesForceRecentlyViewedPage';
-import { SalesforceModal } from '../lib/fixtures/salesforceModal';
+import { SfeBasePage } from '../lib/fixtures/SfBasePage';
+import { SfRecentlyViewedPage } from '../lib/fixtures/SfRecentlyViewedPage';
+import { SfNewRecordModal } from '../lib/fixtures/SfNewRecordModal';
 import { faker } from '@faker-js/faker';
 import SaleforceConnection from '../lib/api/jsforceauth';
 import GenerateModuleCode from '../lib/api/sfObjectDetails';

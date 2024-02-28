@@ -1,9 +1,10 @@
 import { test, expect } from '@playwright/test';
-import { SalesforceBasePage } from '../lib/fixtures/salesforceBasePage';
-import { SalesforceRecentlyViewedPage } from '../lib/fixtures/salesForceRecentlyViewedPage';
-import { SalesforceModal } from '../lib/fixtures/salesforceModal';
+import { SfeBasePage } from '../lib/fixtures/SfBasePage';
+import { SfRecentlyViewedPage } from '../lib/fixtures/SfRecentlyViewedPage';
+import { SfNewRecordModal } from '../lib/fixtures/SfNewRecordModal';
 import { faker } from '@faker-js/faker';
 import SaleforceConnection from '../lib/api/jsforceauth'
+import SfRecordViewPage from '../lib/fixtures/SfRecordViewPage';
 
 
 // test.beforeAll(async () => {
@@ -24,12 +25,11 @@ test('create new Account via GUI', async ( { page }) => {
     console.log("Test Name: " + testName);
 
     const sfObjectName: string = 'Account';
-    const sfHome = new SalesforceBasePage(page);
+    const sfHome = new SfeBasePage(page);
     await sfHome.goto();
-    await sfHome.waitForTopToolbarToLoad()
-    const recentAccounts: SalesforceRecentlyViewedPage = await sfHome.gotoRecentlyViewed(sfObjectName);
+    const recentAccounts: SfRecentlyViewedPage = await sfHome.gotoRecentlyViewed(sfObjectName);
     await expect(recentAccounts.page).toHaveTitle(/Recently Viewed/);
-    const newAccountModal: SalesforceModal = await recentAccounts.createNew();
+    const newAccountModal: SfNewRecordModal = await recentAccounts.createNew();
     await newAccountModal.fillCheckbox('IsDavidsFavorite', true);
     await newAccountModal.fillTextField('Account Name', testName);
     await newAccountModal.fillDateInput('SLA Expiration Date', faker.date.future()); 
@@ -38,8 +38,7 @@ test('create new Account via GUI', async ( { page }) => {
     await newAccountModal.fillSearchField('Parent Account', 'Davids Swiss Bank Account');
     await newAccountModal.fillCombobox('Upsell Opportunity', 'No');
     await newAccountModal.fillCombobox('Rating', 'Hot');
-    await newAccountModal.fillMultiSelect('DavidsMultiSelectField', ["One", "Two", "Three", "Thirty-seven", "Forty", "Forty-one", "Ninety-four"]);
-    
+    await newAccountModal.fillMultiSelect('DavidsMultiSelectField', ["One", "Two", "Three", "Thirty-seven", "Forty", "Forty-one", "Ninety-four"]); 
     await ( newAccountModal.bottomButtonLocator('Save')).click();
 
 
@@ -54,6 +53,22 @@ test('create new Account via GUI', async ( { page }) => {
 });
 
 
+test('Read and Modify existing Account', async ( {page} ) => {
+  const testName = `Test Name ${Date.now()}`;
+  console.log("Test Name: " + testName);
+
+  const sfObjectName: string = 'Account';
+  const sfHome = new SfeBasePage(page);
+  await sfHome.goto();
+  const recordPage: SfNewRecordModal = await (await sfHome.gotoRecordViewPage("Account", "001an000004oIIpAAM")).gotoDetails();
+  recordPage.textFieldLocator("Account Name").highlight();
+  const accountName = await recordPage.readTextField("Account Name");
+
+  console.log(accountName);
+
+  expect(accountName).toBe("MainTestAccount")
+});
+
 
 //Parameterized 
 const accounts = [`Test Name Via GUI Params1 ${Date.now()}`, `Test Name Via GUI Params2 ${Date.now()}`];
@@ -61,12 +76,12 @@ for(const accountName of accounts)
 {
   test(`Parameterized Test for Account ${accountName}`, async ( { page }) => {
     const sfObjectName: string = 'Account';
-    const sfHome = new SalesforceBasePage(page);
+    const sfHome = new SfeBasePage(page);
     await sfHome.goto();
     await sfHome.waitForTopToolbarToLoad()
-    const recentAccounts: SalesforceRecentlyViewedPage = await sfHome.gotoRecentlyViewed(sfObjectName);
+    const recentAccounts: SfRecentlyViewedPage = await sfHome.gotoRecentlyViewed(sfObjectName);
     await expect(recentAccounts.page).toHaveTitle(/Recently Viewed/);
-    const newAccountModal: SalesforceModal = await recentAccounts.createNew();
+    const newAccountModal: SfNewRecordModal = await recentAccounts.createNew();
 
     await newAccountModal.fillTextField('Account Name', accountName);
     await newAccountModal.fillDateInput('SLA Expiration Date', faker.date.future()); 

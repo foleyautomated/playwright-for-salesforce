@@ -1,8 +1,8 @@
 import { Locator, Page } from "@playwright/test";
-import { SalesforceBasePage } from "./salesforceBasePage";
-import { SalesforceModal } from "./salesforceModal";
+import { SfeBasePage } from "./SfBasePage";
+import { SfNewRecordModal } from "./SfNewRecordModal";
 
-export class SalesforceRecentlyViewedPage {
+export class SfRecentlyViewedPage {
     readonly newButton: Locator;
     readonly sfObjectName: string;
     constructor(public readonly page: Page, private salesforceObjectName: string) {
@@ -11,9 +11,10 @@ export class SalesforceRecentlyViewedPage {
         //Get Modal Locator
         this.newButton = page.locator("div[title='New']")
     }   
-    async createNew() : Promise<SalesforceModal> {
+    async createNew() : Promise<SfNewRecordModal> {
         await this.newButton.click();
-        return new SalesforceModal(this.page, this.sfObjectName);
+        return new SfNewRecordModal(this.page, this.sfObjectName);
     }
+
 
 }

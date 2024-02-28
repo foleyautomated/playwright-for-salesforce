@@ -1,10 +1,10 @@
 import {Page, Locator, expect} from '@playwright/test';
-import { SalesforceBasePage} from './salesforceBasePage';
+import { SfeBasePage} from './SfBasePage';
 //import { text } from 'stream/consumers';
 import { format } from 'path';
 
 
-export class SalesforceModal
+export class SfNewRecordModal
 {
     readonly body: Locator;
 
@@ -35,6 +35,10 @@ export class SalesforceModal
             .locator('input');
         return fieldLocator;
     }
+    async readTextField(label: string) : Promise<string>{
+        const textField = this.textFieldLocator(label);
+        return (await textField.textContent({timeout: 100}) ?? "");
+    }
     async fillTextField(label: string, value: string)
     {
         const field = this.textFieldLocator(label);
@@ -49,6 +53,9 @@ export class SalesforceModal
             .locator('input')
         return fieldLocator;
     }
+    async readSearchField(label: string) : Promise<string>{
+        return (await this.searchFieldLocator(label).textContent({timeout: 100}) ?? "");
+    }
     async fillSearchField(label: string, value: string) {
         //Enter Search Value
         await (this.searchFieldLocator(label)).fill(value);
@@ -62,6 +69,9 @@ export class SalesforceModal
             .filter( {has: this.fieldLabelLocator(label)})
         return fieldLocator;
     }
+    async readCombobox(label: string) : Promise<string>{
+        return (await this.comboboxFieldRootLocator(label).textContent({timeout: 100}) ?? "");
+    }
     async fillCombobox(label: string, value: string) {
         await ( this.comboboxFieldRootLocator(label)).locator('button').click();
         await ( this.comboboxFieldRootLocator(label)).locator('span').getByTitle(value, {exact: true}).click();
@@ -73,6 +83,9 @@ export class SalesforceModal
             .locator('textarea');
         return fieldLocator;
     }
+    async readTextArea(label: string) : Promise<string>{
+        return (await this.textAreaFieldLocator(label).textContent({timeout: 100}) ?? "");
+    }
     async fillTextArea(label: string, value: string) {
         await ( this.textAreaFieldLocator(label)).fill(value);
     }
@@ -83,13 +96,17 @@ export class SalesforceModal
             .locator('input');
         return fieldLocator;
     }
+    async readDateInput(label: string) : Promise<string | null> {
+        const dateValue = await this.dateFieldLocator(label).textContent({timeout: 100});
+        return dateValue;
+    }
     async fillDateInput(label: string, date: Date) {
         //TODO: Why is this so hard it TS?? If there isnt a better way, this logic should live somewhere more accessable to the rest of the project.
         const day = ('0' + date.getDate()).slice(-2);
         const month = ('0' + (date.getMonth() + 1)).slice(-2);
         const year = date.getFullYear();
         const formatedDate = `${month}/${day}/${year}`;
-        await ( this.dateFieldLocator(label)).fill(formatedDate);
+        await (this.dateFieldLocator(label)).fill(formatedDate);
     }
 
     //Boolean
@@ -157,12 +174,7 @@ export class SalesforceModal
             await expect(targetItemsLocator.locator('span').getByText(selection)).toContainText(selection);
             
         }
-        
     }
-
-
-
-
     //Modal Buttom Button
      bottomButtonLocator(label: string) : Locator {
         const fieldLocator = this.page.locator('lightning-button')
@@ -176,8 +188,4 @@ export class SalesforceModal
         console.log(`Modal for ${this.objectName} Located`);
         return modalBody;
     }
-    
-
-
-
 }

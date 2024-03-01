@@ -1,44 +1,20 @@
 import { test, expect, request } from '@playwright/test';
 import { SfeBasePage } from '../lib/fixtures/SfBasePage';
 import { SfRecentlyViewedPage } from '../lib/fixtures/SfRecentlyViewedPage';
-import { SfNewRecordModal } from '../lib/fixtures/SfNewRecordModal';
+import { SObjectRecordDetails } from '../lib/fixtures/SObjectRecordDetails';
 import { faker } from '@faker-js/faker';
 import SaleforceConnection from '../lib/api/jsforceauth';
-import GenerateModuleCode from '../lib/api/sfObjectDetails';
-import { Account } from '../src/generated';
+//import UpdateLocalObjectSchema from '../lib/api/SObjectSchema';
 
 
 
-test('debug my stuff', async () => {
+// test('debug my stuff', async () => {
 
-    //TODO - Abstract out API Object creation to use a callback that returns the id
+//     //TODO - Abstract out API Object creation to use a callback that returns the id
+//     await UpdateLocalObjectSchema("Account");
   
-    await GenerateModuleCode("Account");
-  
+//   });
 
-  });
-
-  
-
-test('Create New Account via ts-force', async () => {
-
-  //TODO - Abstract out API Object creation to use a callback that returns the id
-
-  const conn = await SaleforceConnection.open();
-  const testName =  `Test ts-force ${Date.now()}`
-  const acct = new Account();
-  acct.name = testName;
-
-
-
-  await conn.sobject('Account').create(acct);
-  const retrievedAcct = await conn.query<{Id: string}>(`SELECT FIELDS(ALL) FROM ACCOUNT WHERE Name = '${testName}' LIMIT 200`);
-  expect(retrievedAcct.records[0].Id).toBeDefined()
-  console.log("ID: " + retrievedAcct.records[0].Id);
-
-  expect(true).toBe(true);
-
-});
 
 
 test('Create New Account via API222222', async () => {

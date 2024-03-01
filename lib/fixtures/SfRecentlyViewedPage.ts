@@ -1,6 +1,6 @@
 import { Locator, Page } from "@playwright/test";
 import { SfeBasePage } from "./SfBasePage";
-import { SfNewRecordModal } from "./SfNewRecordModal";
+import { SObjectRecordDetails } from "./SObjectRecordDetails";
 
 export class SfRecentlyViewedPage {
     readonly newButton: Locator;
@@ -11,9 +11,9 @@ export class SfRecentlyViewedPage {
         //Get Modal Locator
         this.newButton = page.locator("div[title='New']")
     }   
-    async createNew() : Promise<SfNewRecordModal> {
+    async createNew() : Promise<SObjectRecordDetails> {
         await this.newButton.click();
-        return new SfNewRecordModal(this.page, this.sfObjectName);
+        return new SObjectRecordDetails(this.page, this.sfObjectName);
     }
 
 

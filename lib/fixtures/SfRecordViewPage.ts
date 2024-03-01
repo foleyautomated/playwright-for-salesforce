@@ -1,6 +1,6 @@
 import { Locator, Page } from "@playwright/test";
 import { SfeBasePage } from "./SfBasePage";
-import { SfNewRecordModal } from "./SfNewRecordModal";
+import { SObjectRecordDetails } from "./SObjectRecordDetails";
 
 export default class SfRecordViewPage {
     readonly detailsTab: Locator;
@@ -9,11 +9,11 @@ export default class SfRecordViewPage {
         this.sfObjectName = sfObjectName;
         this.detailsTab = this.lighteningTabLocator("Details");
     }   
-    async gotoDetails() : Promise<SfNewRecordModal> {
+    async gotoDetails() : Promise<SObjectRecordDetails> {
         await this.detailsTab.click();
         const firstPencilIcon = this.page.locator("[class*='inline-edit-trigger-ico']").first();
         await firstPencilIcon.click();
-        return new SfNewRecordModal(this.page, this.sfObjectName);
+        return new SObjectRecordDetails(this.page, this.sfObjectName);
     }
     lighteningTabLocator(tabLabel: string) : Locator {
         const tabLocator = this.page.locator("lightning-tab-bar").locator('li').getByText(tabLabel, {exact: true} );

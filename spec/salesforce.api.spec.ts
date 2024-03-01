@@ -1,7 +1,7 @@
 import { test, expect, request } from '@playwright/test';
 import { SfeBasePage } from '../lib/fixtures/SfBasePage';
 import { SfRecentlyViewedPage } from '../lib/fixtures/SfRecentlyViewedPage';
-import { SfNewRecordModal } from '../lib/fixtures/SfNewRecordModal';
+import { SObjectRecordDetails } from '../lib/fixtures/SObjectRecordDetails';
 import { faker } from '@faker-js/faker';
 import SaleforceConnection from '../lib/api/jsforceauth'
 import * as fs from 'fs';

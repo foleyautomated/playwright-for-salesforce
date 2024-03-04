@@ -1,33 +1,34 @@
 import { test, expect, request } from '@playwright/test';
-import { SfeBasePage } from '../lib/fixtures/SfBasePage';
+import { SfBasePage } from '../lib/fixtures/SfBasePage';
 import { SfRecentlyViewedPage } from '../lib/fixtures/SfRecentlyViewedPage';
-import { SObjectRecordDetails } from '../lib/fixtures/SObjectRecordDetails';
+import { SfRecordDetailsPage } from '../lib/fixtures/SfRecordDetailsPage';
+import SfObjectInstance from '../lib/api/SObjectInstance';
 import { faker } from '@faker-js/faker';
-import SaleforceConnection from '../lib/api/jsforceauth';
+import SaleforceConnection from '../lib/api/SfConnection';
+import { promises as fsPromises } from 'fs';
+import fs from 'fs';
+import * as Path from 'path';
+
 //import UpdateLocalObjectSchema from '../lib/api/SObjectSchema';
 
 
 
-// test('debug my stuff', async () => {
+test('Debug your bad code here', async ( { page })  => {
+  let myobj = await SfObjectInstance.initFromSalesForce("Case");
+  myobj.labelToValue["Subject"] = "New Test Subject!"
 
-//     //TODO - Abstract out API Object creation to use a callback that returns the id
-//     await UpdateLocalObjectSchema("Account");
   
-//   });
-
-
-
-test('Create New Account via API222222', async () => {
-
-  //TODO - Abstract out API Object creation to use a callback that returns the id
-
-  const conn = await SaleforceConnection.open();
-  const testName =  `Test Site Via API ${Date.now()}`
-  const data = {"Name" : testName};
-  await conn.sobject('Account').create(data);
-  const acct = await conn.query<{Id: string}>(`SELECT FIELDS(ALL) FROM ACCOUNT WHERE Name = '${testName}' LIMIT 200`);
-  expect(acct.records[0].Id).toBeDefined()
-  console.log("ID: " + acct.records[0].Id);
-
 });
 
+
+test('Try different SOQL Queries Here', async () => {
+  const conn = await SaleforceConnection.open();
+  const query = `SELECT  QualifiedApiName FROM EntityDefinition order by QualifiedApiName`;
+  const result = await conn.query<{Id: string}>(query);
+
+  const outputPath = `debug/data/instance/QualifiedApiNames.json`;
+  const objectDetails: string = JSON.stringify(result.records, null, 2);
+  const objectDirectory = Path.dirname(outputPath);
+  await fsPromises.mkdir(objectDirectory, {recursive: true});
+  fs.writeFileSync(outputPath, objectDetails);
+});

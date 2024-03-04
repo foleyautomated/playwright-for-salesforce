@@ -1,35 +1,46 @@
 import {Page, Locator, expect} from '@playwright/test';
-import { SfeBasePage} from './SfBasePage';
+import { SfBasePage} from './SfBasePage';
 //import { text } from 'stream/consumers';
 import { format } from 'path';
-import { SObjectSchema } from '../api/SObjectSchema';
+import SObjectSchema from '../api/SObjectSchema';
 import { FieldType, QueryResult } from 'jsforce';
-import SaleforceConnection from '../api/jsforceauth'
+import SaleforceConnection from '../api/SfConnection'
+import { LabelsAndValues } from '../api/SObjectInstance';
+import { SfRecentlyViewedPage } from './SfRecentlyViewedPage';
+import SfRecordViewPage from './SfRecordViewPage';
 
 
 
-export class SObjectRecordDetails
+export class SfRecordDetailsPage
 {
-    private schema: SObjectSchema | undefined;
-    constructor(public readonly page: Page, public readonly sObjectName: string) {
+    private constructor(
+        public readonly page: Page, 
+        public readonly sObjName: string, 
+        public readonly sObjSchema: SObjectSchema
+    ) {}
 
+    //async Initializers
+    public static async initToExistingRecord(page: Page, sObjectName: string, sObjectId: string) : Promise<SfRecordDetailsPage> {
+        const sfRecordsViewPage = await SfRecordViewPage.initToExistingRecord(page, sObjectName, sObjectId);
+        await sfRecordsViewPage.gotoDetailsAndEdit();
+        const schema: SObjectSchema = await SObjectSchema.init(sObjectName);
+        return new SfRecordDetailsPage(page, sObjectName, schema);
     }
-    //API Settup
-    async getSchema() : Promise<SObjectSchema> {
-        if(this.schema)
-        {
-            return this.schema;
-        }
-        else
-        {
-            this.schema = new SObjectSchema(this.sObjectName);
-            return this.schema;
-        }
+    public static async initToNewRecord(page: Page, sObjectName: string) : Promise<SfRecordDetailsPage>{
+        const recentlyViewedPage = await SfRecentlyViewedPage.init(page, sObjectName);
+        const newRecordDetailsPage: SfRecordDetailsPage = await (recentlyViewedPage).CreateNewRecord();
+        return newRecordDetailsPage;
     }
-
+    public static async initFromSfRecordViewPage(rvpage: SfRecordViewPage) : Promise<SfRecordDetailsPage> {
+        const sObjectName = rvpage.sfObjectName;
+        const page = rvpage.page;
+        const schema: SObjectSchema = await SObjectSchema.init(sObjectName);
+        const detailsPage = new SfRecordDetailsPage(page, sObjectName, schema);
+        return detailsPage;
+    }
 
     async fill(label: string, value: object | string | Date | boolean | string[]) {
-        const fieldType: FieldType = await (await this.getSchema()).getTypeOfLabel(label);
+        const fieldType: FieldType = (this.sObjSchema).getTypeOfLabel(label);
         switch (fieldType) {
             case "string":
                 console.log("Handling string field type");
@@ -154,8 +165,6 @@ export class SObjectRecordDetails
                 break;
         }
     }
-
-
     private scrubSpecialChararactersAndCreateRegex(label: string) : RegExp
     {
         const labelWithoutSpecialCharacters = label.replace(/\W/g, '.');
@@ -356,14 +365,14 @@ export class SObjectRecordDetails
     modalBodyLocator() : Locator {
         const modalHeader = this.page.getByText('h2:has-text("New Account")');
         const modalBody = this.page.locator('div.actionBody').filter({ has: modalHeader });
-        console.log(`Modal for ${this.sObjectName} Located`);
+        console.log(`Modal for ${this.sObjName} Located`);
         return modalBody;
     }
     async save(whereValue: string, whereProperty: string='Name') {
         await (this.bottomButtonLocator('Save')).click();
         const conn = await SaleforceConnection.open();
         await expect(async () => {
-          const results = await conn.query<{Id: string}>(`SELECT FIELDS(ALL) FROM ${this.sObjectName} WHERE ${whereProperty} = '${whereValue}' LIMIT 200`);
+          const results = await conn.query<{Id: string}>(`SELECT FIELDS(ALL) FROM ${this.sObjName} WHERE ${whereProperty} = '${whereValue}' LIMIT 200`);
           expect(results.records[0]).toBeDefined();
         }).toPass({timeout: 15_000});
     }

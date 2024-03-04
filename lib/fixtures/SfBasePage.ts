@@ -8,38 +8,29 @@ import SfRecordViewPage from './SfRecordViewPage';
 //const logger = pino();
 
 
-export class SfeBasePage
+export class SfBasePage
 {
     readonly globalSearch: Locator
-    readonly notificationsButton: Locator;
 
-    constructor(public readonly page: Page) {
+    private constructor(
+        public readonly page: Page) {
         this.globalSearch = page.getByPlaceholder('Search Setup');
-        this.notificationsButton = page.getByRole('button', { name: 'Notifications' });
-    }
-    async goto() {
-        await this.page.goto('/');
-        await this.waitForTopToolbarToLoad();
     }
 
-    async waitForTopToolbarToLoad() {
-        console.log("waiting for Salesforce Toolbar to Load...")
-        //await expect(this.globalSearch).toBeVisible({timeout: 30000});
-        //await expect(this.notificationsButton ).toBeVisible({timeout: 30000})
-        console.log("salesforce toolbar is loaded");
+    //static initializers
+    public static async initToHome(page: Page) : Promise<SfBasePage> {
+        const basePage = new SfBasePage(page)
+        await basePage.page.goto('/');
+        return basePage;
     }
 
+    //convenience methods
     async gotoRecentlyViewed(sfObjectName: string) : Promise<SfRecentlyViewedPage> {
-        //TODO: Figure out how to pull this URL from the config
-        await this.page.goto(`https://agilitypartners-dev-ed.develop.lightning.force.com/lightning/o/${sfObjectName}/list?filterName=Recent`);
-        return new SfRecentlyViewedPage(this.page, sfObjectName);
+        const recentlyViewedPage = SfRecentlyViewedPage.init(this.page, sfObjectName);
+        return recentlyViewedPage;
     }
 
-    async gotoRecordViewPage(sfObjectName: string, sfObjectId: string) {
-        const recordUrl = process.env.SF_GUI_BASE_LIGHTNING_URL! + `/r/${sfObjectName}/${sfObjectId}/view`;
-        await this.page.goto(recordUrl);
-        return new SfRecordViewPage(this.page, sfObjectName, sfObjectId);
-    }
+
 
     //TODO - Maybe a bit ambitious, but fun nonetheless.
     //AndThen() : SalesforceBasePage { return this;}

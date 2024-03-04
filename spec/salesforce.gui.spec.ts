@@ -1,9 +1,9 @@
 import { test, expect } from '@playwright/test';
-import { SfeBasePage } from '../lib/fixtures/SfBasePage';
+import { SfBasePage } from '../lib/fixtures/SfBasePage';
 import { SfRecentlyViewedPage } from '../lib/fixtures/SfRecentlyViewedPage';
-import { SObjectRecordDetails } from '../lib/fixtures/SObjectRecordDetails';
+import { SfRecordDetailsPage } from '../lib/fixtures/SfRecordDetailsPage';
 import { faker } from '@faker-js/faker';
-import SaleforceConnection from '../lib/api/jsforceauth'
+import SaleforceConnection from '../lib/api/SfConnection'
 import SfRecordViewPage from '../lib/fixtures/SfRecordViewPage';
 import { QueryResult } from 'jsforce';
 
@@ -26,11 +26,7 @@ test('create new Account via GUI', async ( { page }) => {
     console.log("Test Name: " + testName);
     const sfObjectName: string = 'Account';
 
-    const sfHome = new SfeBasePage(page);
-    await sfHome.goto();
-    const recentAccounts: SfRecentlyViewedPage = await sfHome.gotoRecentlyViewed(sfObjectName);
-    await expect(recentAccounts.page).toHaveTitle(/Recently Viewed/);
-    const newAccountModal: SObjectRecordDetails = await recentAccounts.createNew();
+    const newAccountModal: SfRecordDetailsPage = await SfRecordDetailsPage.initToNewRecord(page, sfObjectName);
     await newAccountModal.fill('IsDavidsFavorite', true);
     await newAccountModal.fill('Account Name', testName);
     await newAccountModal.fill('SLA Expiration Date', faker.date.future()); 
@@ -48,10 +44,9 @@ test('Read and Modify existing Account', async ( {page} ) => {
   const testName = `Test Name ${Date.now()}`;
   console.log("Test Name: " + testName);
   const sfObjectName: string = 'Account';
-  const sfHome = new SfeBasePage(page);
-  await sfHome.goto();
-  const recordPage: SObjectRecordDetails = await (await sfHome.gotoRecordViewPage(sfObjectName, "001an000004oIIpAAM")).gotoDetails();
-  recordPage.textFieldLocator("Account Name").highlight();
+  const sfObjId = '001an000004oIIpAAM';
+
+  const recordPage: SfRecordDetailsPage = await SfRecordDetailsPage.initToExistingRecord(page, sfObjectName, sfObjId)
   const accountName = await recordPage.readTextField("Account Name");
   console.log(accountName);
   const selectedMultiItems = await recordPage.readMultiSelectItems("DavidsMultiSelectField", "Chosen");
@@ -68,13 +63,8 @@ const accounts = [`Test Name Via GUI Params1 ${Date.now()}`, `Test Name Via GUI 
 for(const accountName of accounts)
 {
   test(`Parameterized Test for Account ${accountName}`, async ( { page }) => {
-    const sfObjectName: string = 'Account';
-    const sfHome = new SfeBasePage(page);
-    await sfHome.goto();
-    await sfHome.waitForTopToolbarToLoad()
-    const recentAccounts: SfRecentlyViewedPage = await sfHome.gotoRecentlyViewed(sfObjectName);
-    await expect(recentAccounts.page).toHaveTitle(/Recently Viewed/);
-    const newAccountModal: SObjectRecordDetails = await recentAccounts.createNew();
+
+    const newAccountModal: SfRecordDetailsPage = await SfRecordDetailsPage.initToNewRecord(page, "Account");
 
     await newAccountModal.fillTextField('Account Name', accountName);
     await newAccountModal.fillDateInput('SLA Expiration Date', faker.date.future()); 

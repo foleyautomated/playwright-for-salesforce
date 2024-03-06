@@ -4,15 +4,18 @@ import { SfBasePage} from './SfBasePage';
 import { format } from 'path';
 import SObjectSchema from '../api/SObjectSchema';
 import { FieldType, QueryResult } from 'jsforce';
-import SaleforceConnection from '../api/SfConnection'
-import { LabelsAndValues } from '../api/SObjectInstance';
+import SaleforceConnection from '../api/SalesforceConnecter'
+import LabelToValue from '../api/SObjectInstance';
+import SObjectInstance from '../api/SObjectInstance';
 import { SfRecentlyViewedPage } from './SfRecentlyViewedPage';
 import SfRecordViewPage from './SfRecordViewPage';
+import { resolve } from 'dns';
 
 
 
 export class SfRecordDetailsPage
 {
+
     private constructor(
         public readonly page: Page, 
         public readonly sObjName: string, 
@@ -32,14 +35,35 @@ export class SfRecordDetailsPage
         return newRecordDetailsPage;
     }
     public static async initFromSfRecordViewPage(rvpage: SfRecordViewPage) : Promise<SfRecordDetailsPage> {
-        const sObjectName = rvpage.sfObjectName;
+        await rvpage.detailsTab.click();
+        const firstPencilIcon = rvpage.page.locator("[class*='inline-edit-trigger-ico']").first();
+        await firstPencilIcon.click();
+        const sObjectName = rvpage.sObjectName;
         const page = rvpage.page;
         const schema: SObjectSchema = await SObjectSchema.init(sObjectName);
         const detailsPage = new SfRecordDetailsPage(page, sObjectName, schema);
         return detailsPage;
     }
+    public static async initFromSfRecentlyViewedPage(sfrecent: SfRecentlyViewedPage) : Promise<SfRecordDetailsPage> {
+        await sfrecent.newButton.click();
+        return new SfRecordDetailsPage(sfrecent.page, sfrecent.sObjectName, sfrecent.sObjectSchema);
+    }
+    
+    //Generalized fill methods
+    async fillBySObjectInstance(sObjectInstance: SObjectInstance) : Promise<void> {
+        const visibleLabels: string[] = await this.getAllVisibleLabels();
 
-    async fill(label: string, value: object | string | Date | boolean | string[]) {
+        for(const label of sObjectInstance.labelsToValues.keys())
+        {
+            if(visibleLabels.includes(label))
+            {
+                this.fillByLabel(label, sObjectInstance.labelsToValues.get(label));
+            }
+        }
+    }
+
+
+    async fillByLabel(label: string, value: object | string | Date | boolean | string[]) : Promise<void> {
         const fieldType: FieldType = (this.sObjSchema).getTypeOfLabel(label);
         switch (fieldType) {
             case "string":
@@ -165,6 +189,15 @@ export class SfRecordDetailsPage
                 break;
         }
     }
+
+
+    //Generalized Locators
+    
+    async getAllVisibleLabels(): Promise<string[]> {
+        const allVisibleLabels = await this.allFieldLabelsLocator().allTextContents();
+        return allVisibleLabels;
+    } 
+
     private scrubSpecialChararactersAndCreateRegex(label: string) : RegExp
     {
         const labelWithoutSpecialCharacters = label.replace(/\W/g, '.');

@@ -1,6 +1,6 @@
 /* eslint-disable @typescript-eslint/no-unsafe-member-access */
 import { meta } from "@typescript-eslint/eslint-plugin";
-import SfConnection from "./SfConnection";
+import SalesforceConnecter from "./SalesforceConnecter";
 import * as fs from 'fs';
 import { ActionOverride, ChildRelationship, DescribeSObjectResult, Field, FieldType, NamedLayoutInfo, RecordTypeInfo, ScopeInfo, maybe } from "jsforce/describe-result";
 
@@ -13,10 +13,12 @@ export default class SObjectSchema
 
     public static async init(sObjectName: string) : Promise<SObjectSchema>
     {
-        const conn = await SfConnection.open();
+        const conn = await SalesforceConnecter.open();
+        
         return new Promise<SObjectSchema>((resolve, reject) => {
             conn.sobject(sObjectName).describe((err, metadata) => {
                 if (err) {
+                    console.log(err);
                     reject(err);
                     return;
                 }
@@ -25,6 +27,8 @@ export default class SObjectSchema
                 resolve(schema);
             });
         });
+
+
         // let schema: SObjectSchema;
         // const conn = await SfConnection.open();
         // await conn.sobject(sObjectName).describe(function(err, metadata) { 

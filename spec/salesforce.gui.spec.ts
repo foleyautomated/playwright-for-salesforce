@@ -3,7 +3,7 @@ import { SfBasePage } from '../lib/fixtures/SfBasePage';
 import { SfRecentlyViewedPage } from '../lib/fixtures/SfRecentlyViewedPage';
 import { SfRecordDetailsPage } from '../lib/fixtures/SfRecordDetailsPage';
 import { faker } from '@faker-js/faker';
-import SaleforceConnection from '../lib/api/SfConnection'
+import SalesforceConnecter from '../lib/api/SalesforceConnecter'
 import SfRecordViewPage from '../lib/fixtures/SfRecordViewPage';
 import { QueryResult } from 'jsforce';
 
@@ -27,15 +27,15 @@ test('create new Account via GUI', async ( { page }) => {
     const sfObjectName: string = 'Account';
 
     const newAccountModal: SfRecordDetailsPage = await SfRecordDetailsPage.initToNewRecord(page, sfObjectName);
-    await newAccountModal.fill('IsDavidsFavorite', true);
-    await newAccountModal.fill('Account Name', testName);
-    await newAccountModal.fill('SLA Expiration Date', faker.date.future()); 
-    await newAccountModal.fill('Shipping Street', '1234 MyStreet Dr.');
-    await newAccountModal.fill('Account Site', `www.mysite.com`);
-    await newAccountModal.fill('Parent Account', 'Davids Swiss Bank Account');
-    await newAccountModal.fill('Upsell Opportunity', 'No');
-    await newAccountModal.fill('Rating', 'Hot');
-    await newAccountModal.fill('DavidsMultiSelectField', ["One", "Two", "Three", "Thirty-seven", "Forty", "Forty-one", "Ninety-four"]); 
+    await newAccountModal.fillByLabel('IsDavidsFavorite', true);
+    await newAccountModal.fillByLabel('Account Name', testName);
+    await newAccountModal.fillByLabel('SLA Expiration Date', faker.date.future()); 
+    await newAccountModal.fillByLabel('Shipping Street', '1234 MyStreet Dr.');
+    await newAccountModal.fillByLabel('Account Site', `www.mysite.com`);
+    await newAccountModal.fillByLabel('Parent Account', 'Davids Swiss Bank Account');
+    await newAccountModal.fillByLabel('Upsell Opportunity', 'No');
+    await newAccountModal.fillByLabel('Rating', 'Hot');
+    await newAccountModal.fillByLabel('DavidsMultiSelectField', ["One", "Two", "Three", "Thirty-seven", "Forty", "Forty-one", "Ninety-four"]); 
     await newAccountModal.save(testName, "Name");
 });
 

@@ -3,8 +3,18 @@ import { SfBasePage } from '../lib/fixtures/SfBasePage';
 import { SfRecentlyViewedPage } from '../lib/fixtures/SfRecentlyViewedPage';
 import { SfRecordDetailsPage } from '../lib/fixtures/SfRecordDetailsPage';
 import { faker } from '@faker-js/faker';
-import SaleforceConnection from '../lib/api/SfConnection'
+import SaleforceConnection from '../lib/api/SalesforceConnecter'
 import * as fs from 'fs';
+import SObjectInstance from '../lib/api/SObjectInstance';
+
+
+
+test('SObjectInstance Debug', async () => {
+  let sob = await SObjectInstance.initFromSalesForce("Account");
+  
+
+});
+
 
 
 test('Create New Account via API', async () => {
@@ -20,12 +30,6 @@ test('Create New Account via API', async () => {
   console.log("ID: " + acct.records[0].Id);
 
 });
-
-
-
-
-
-
 
 
 test('Query MainTestAccount via API', async () => {

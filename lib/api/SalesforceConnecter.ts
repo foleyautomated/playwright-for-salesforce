@@ -7,7 +7,7 @@ import * as path from 'path';
 
 
 /** Static class used to connect to Salesforce instance. */
-export default abstract class SfConnection {
+export default abstract class SalesforceConnecter {
 
     constructor(){}
 

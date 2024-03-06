@@ -1,7 +1,7 @@
 import { test, expect, request } from '@playwright/test';
-import { SfBasePage } from '../lib/fixtures/SfBasePage';
-import { SfRecentlyViewedPage } from '../lib/fixtures/SfRecentlyViewedPage';
-import { SfRecordDetailsPage } from '../lib/fixtures/SfRecordDetailsPage';
+import { SfBasePage } from '../lib/sfdynamics/SfBasePage';
+import { SfRecentlyViewedPage } from '../lib/sfdynamics/SfRecentlyViewedPage';
+import { SfRecordDetailsPage } from '../lib/sfdynamics/SfRecordDetailsPage';
 import SfObjectInstance from '../lib/api/SObjectInstance';
 import { faker } from '@faker-js/faker';
 import SaleforceConnection from '../lib/api/SalesforceConnecter';
@@ -13,15 +13,15 @@ import * as Path from 'path';
 
 
 
-test('Debug your bad code here', async ( { page })  => {
+test('SfRecordDetailsPage - Create New Account ', async ( { page })  => {
   let sObject = "Account";
 
   let myobj = await SfObjectInstance.initFromSalesForce(sObject);
-  myobj.labelsToValues.set("Subject", "New Test Subject!");
-
+  //myobj.labelsToValues.set("Subject", "New Test Subject!");
+  myobj.labelsToValues["Shipping City"] = "Denver"
   const detailsPage = await SfRecordDetailsPage.initToNewRecord(page, sObject);
 
-  detailsPage.fillBySObjectInstance(myobj);
+  await detailsPage.fillBySObjectInstance(myobj);
 
   console.log("done!");
 

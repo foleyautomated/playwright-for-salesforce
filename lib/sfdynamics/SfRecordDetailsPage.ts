@@ -46,18 +46,22 @@ export class SfRecordDetailsPage
     }
     public static async initFromSfRecentlyViewedPage(sfrecent: SfRecentlyViewedPage) : Promise<SfRecordDetailsPage> {
         await sfrecent.newButton.click();
-        return new SfRecordDetailsPage(sfrecent.page, sfrecent.sObjectName, sfrecent.sObjectSchema);
+        const detailspage = new SfRecordDetailsPage(sfrecent.page, sfrecent.sObjectName, sfrecent.sObjectSchema);
+        await expect(detailspage.bottomButtonLocator("Save")).toBeVisible();
+        await expect(detailspage.allFieldLabelsLocator().nth(3)).toBeVisible(); //expect at least 3 labels to exist.
+        return detailspage;
     }
     
     //Generalized fill methods
     async fillBySObjectInstance(sObjectInstance: SObjectInstance) : Promise<void> {
         const visibleLabels: string[] = await this.getAllVisibleLabels();
 
-        for(const label of sObjectInstance.labelsToValues.keys())
+        for(const label in sObjectInstance.labelsToValues)
         {
-            if(visibleLabels.includes(label))
+            const value = sObjectInstance.labelsToValues[label];
+            if(visibleLabels.includes(label) && value)
             {
-                this.fillByLabel(label, sObjectInstance.labelsToValues.get(label));
+                await this.fillByLabel(label, value);
             }
         }
     }
@@ -65,13 +69,12 @@ export class SfRecordDetailsPage
 
     async fillByLabel(label: string, value: object | string | Date | boolean | string[]) : Promise<void> {
         const fieldType: FieldType = (this.sObjSchema).getTypeOfLabel(label);
+        console.log(`Filling label: '${label}' of type: <${fieldType}> with value: '${value.toString()}'`)
         switch (fieldType) {
             case "string":
-                console.log("Handling string field type");
                 await this.fillTextField(label, value.toString());
                 break;
             case "boolean":
-                console.log("Handling boolean field type");
                 if(typeof value == "boolean")
                 {
                     await this.fillCheckbox(label, value);
@@ -82,15 +85,12 @@ export class SfRecordDetailsPage
                 }
                 break;
             case "int":
-                console.log("Handling int field type");
                 await this.fillTextField(label, value.toString());
                 break;
             case "double":
-                console.log("Handling double field type");
                 await this.fillTextField(label, value.toString());
                 break;
             case "date":
-                console.log("Handling date field type");
                 if(value instanceof Date)
                 {
                     await this.fillDateInput(label, value);
@@ -101,7 +101,6 @@ export class SfRecordDetailsPage
                 }
                 break;
             case "datetime":
-                console.log("Handling datetime field type");
                 if(value instanceof Date)
                 {
                     await this.fillDateInput(label, value);
@@ -112,68 +111,52 @@ export class SfRecordDetailsPage
                 }
                 break;
             case "base64":
-                console.log("Handling base64 field type");
                 throw new Error("'base64' fields not yet supported");
                 break;
             case "id":
-                console.log("Handling id field type");
                 throw new Error("'id' fields not yet supported");
                 break;
             case "reference":
-                console.log("Handling reference field type");
                 await this.fillSearchField(label, value.toString());
                 break;
             case "currency":
-                console.log("Handling currency field type");
-                await this.fillTextArea(label, value.toString());
+                await this.fillTextField(label, value.toString());
                 break;
             case "textarea":
-                console.log("Handling textarea field type");
                 await this.fillTextArea(label, value.toString());
                 break;
             case "percent":
-                console.log("Handling percent field type");
-                await this.fillTextArea(label, value.toString());
+                await this.fillTextField(label, value.toString());
                 break;
             case "phone":
-                console.log("Handling phone field type");
-                await this.fillTextArea(label, value.toString());
+                await this.fillTextField(label, value.toString());
                 break;
             case "url":
-                console.log("Handling url field type");
-                await this.fillTextArea(label, value.toString());
+                await this.fillTextField(label, value.toString());
                 break;
             case "email":
-                console.log("Handling email field type");
-                await this.fillTextArea(label, value.toString());
+                await this.fillTextField(label, value.toString());
                 break;
             case "combobox":
-                console.log("Handling combobox field type");
                 await this.fillSearchField(label, value.toString());
                 break;
             case "picklist":
-                console.log("Handling picklist field type");
                 await this.fillCombobox(label, value.toString());
                 break;
             case "multipicklist":
-                console.log("Handling multipicklist field type");
-                const multiPicklistItems: string[] = Object.values(value).map((val) => String(val))
+                const multiPicklistItems: string[] = value.toString().split(";");
                 await this.fillMultiSelect(label, multiPicklistItems);
                 break;
             case "anyType":
-                console.log("Handling anyType field type");
-                await this.fillTextArea(label, value.toString());
+                await this.fillTextField(label, value.toString());
                 break;
             case "location":
-                console.log("Handling location field type");
-                await this.fillTextArea(label, value.toString());
+                await this.fillTextField(label, value.toString());
                 break;
             case "time":
-                console.log("Handling time field type");
-                await this.fillTextArea(label, value.toString());
+                await this.fillTextField(label, value.toString());
                 break;
             case "encryptedstring":
-                console.log("Handling encryptedstring field type");
                 throw new Error("'encryptedstring' fields not yet supported");
                 break;
             case "address":
@@ -181,12 +164,10 @@ export class SfRecordDetailsPage
                 console.log("Handling address field type");
                 break;
             case "complexvalue":
-                console.log("Handling complexvalue field type");
                 throw new Error("'complexvalue' fields not yet supported");
                 break;
             default:
-                console.log("Unknown field type");
-                break;
+                throw new Error(`Unknown field type: '${fieldType}'`);
         }
     }
 

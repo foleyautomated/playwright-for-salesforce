@@ -1,19 +1,17 @@
 import { test, expect, request } from '@playwright/test';
-import { SfBasePage } from '../lib/fixtures/SfBasePage';
-import { SfRecentlyViewedPage } from '../lib/fixtures/SfRecentlyViewedPage';
-import { SfRecordDetailsPage } from '../lib/fixtures/SfRecordDetailsPage';
+import { SfBasePage } from '../lib/sfdynamics/SfBasePage';
+import { SfRecentlyViewedPage } from '../lib/sfdynamics/SfRecentlyViewedPage';
+import { SfRecordDetailsPage } from '../lib/sfdynamics/SfRecordDetailsPage';
 import { faker } from '@faker-js/faker';
 import SaleforceConnection from '../lib/api/SalesforceConnecter'
 import * as fs from 'fs';
 import SObjectInstance from '../lib/api/SObjectInstance';
+import SObjectSchema from '../lib/api/SObjectSchema';
 
 
 
-test('SObjectInstance Debug', async () => {
-  let sob = await SObjectInstance.initFromSalesForce("Account");
-  
 
-});
+
 
 
 

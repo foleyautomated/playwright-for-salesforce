@@ -1,6 +1,6 @@
 import { chromium, expect, type FullConfig } from '@playwright/test';
 import { SalesforceLoginPage} from '../pages/salesforceLoginPage'; 
-import { SfBasePage } from '../fixtures/SfBasePage';
+import { SfBasePage } from '../sfdynamics/SfBasePage';
 import * as fs from 'fs';
 
 async function globalSetup(config: FullConfig) {
@@ -12,9 +12,9 @@ async function globalSetup(config: FullConfig) {
   const ageOfStorageStateInMinutes = getFileAgeInMinutes(storageStateFilePath);
 
   
-  if(ageOfStorageStateInMinutes > 20)
+  if(ageOfStorageStateInMinutes > Number(process.env.MAX_AGE_OF_CONTEXT_IN_MINS))
   {
-    console.log(`Refreshing browser state because the existing saved state is ${ageOfStorageStateInMinutes} mins old.`)
+    console.log(`Refreshing browser state because the existing saved state is ${ageOfStorageStateInMinutes} mins old.`);
     const browser = await chromium.launch();
     const page = await browser.newPage();
     await page.goto(baseURL!);
@@ -24,7 +24,7 @@ async function globalSetup(config: FullConfig) {
     await page.context().storageState({ path: storageStateFilePath});
     await browser.close();
   } else {
-    console.log(`Using existing browser state because it is only ${ageOfStorageStateInMinutes} mins old.`)
+    console.log(`Using existing browser state because it is only ${ageOfStorageStateInMinutes} mins old.`);
   }
 }
 

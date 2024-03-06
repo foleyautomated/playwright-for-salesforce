@@ -9,7 +9,7 @@ import { RecordAttributes, SObject } from "jsforce";
 import SObjectSchema from "./SObjectSchema"
 import { max } from "date-fns";
 
-export type LabelToValue =  { [key: string]: any }[];
+export type LabelToValue =  { [key: string]: any };
 
 export default class SObjectInstance
 {
@@ -29,7 +29,7 @@ export default class SObjectInstance
     public static async initFromSalesForce(sObjectName: string, id: string="") : Promise<SObjectInstance>
     {
         let instance: SObjectInstance;
-        let labelsToValues: { [key: string]: any }[] = [];
+        let labelsToValues: LabelToValue = {};
 
 
         const schema = await SObjectSchema.init(sObjectName);
@@ -43,11 +43,14 @@ export default class SObjectInstance
         } 
         const foundRecord = await conn.sobject(sObjectName).retrieve(id); 
 
-        for(const [key, value]  of Object.entries(foundRecord))
+        for(const key in foundRecord)
         {
-            if(value !== undefined)
+            //TODO: Find easier way to get the value 🫠
+            let value = Object.entries(foundRecord).filter((r) => r[0] == key)[0][1];
+            if(value !== undefined && key != 'attributes')
             {
-                labelsToValues.push({key, value});
+                const label = schema.getFieldInfoByName(key).label;
+                labelsToValues[label] = value;
             }
         }
         
@@ -62,7 +65,7 @@ export default class SObjectInstance
     }
 
 
-    public static async initFromJson(){ } //TODO: Implement Initialization from file
+    public static async initFromJson(){ throw new Error("Not yet implemented")} //TODO: Implement Initialization from file
 
     public async saveLocal(filePath: string = "") : Promise<void>{
         const defaultOutputPath = `debug/data/instance/${this.sObjectName}/${this.sObjectId}.json`;

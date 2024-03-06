@@ -9,7 +9,10 @@ import { ActionOverride, ChildRelationship, DescribeSObjectResult, Field, FieldT
 export default class SObjectSchema
 {
 
-    private constructor(public readonly SObjectName: string, public readonly SObjectDescription: DescribeSObjectResult) {}
+    private constructor(
+        public readonly SObjectName: string, 
+        public readonly SObjectDescription: DescribeSObjectResult
+    ) {}
 
     public static async init(sObjectName: string) : Promise<SObjectSchema>
     {
@@ -43,19 +46,29 @@ export default class SObjectSchema
     }
 
     getTypeOfLabel(label: string) : FieldType {
-        return (this.getFieldByLabel(label)).type;
+        return (this.getFieldInfoByLabel(label)).type;
     } 
-    getFieldByLabel(label: string) : Field {
+    getFieldInfoByLabel(label: string) : Field {
         const fieldInfo: Field = (this.SObjectDescription).fields
             .filter((f) => f.label.includes(label))
             .sort((f) =>  f.label.length - label.length) //The GUI has "Parent Account" and the API has "Parent Account ID"; here we take the most similar label.
             [0]; 
         return fieldInfo;
     }
+    getFieldInfoByName(name: string) : Field {
+        const fieldInfo: Field = (this.SObjectDescription).fields
+            .filter((f) => f.name.includes(name))
+            [0]; 
+        return fieldInfo;
+    }
 
-    async UpdateLocalObjectSchema() {
+    updateLocalObjectSchema() {
+        //TODO: Would Ideally be async
         const objectDetails = JSON.stringify(this.SObjectDescription, null, 2);
-        const path = `./debug/${this.SObjectName}_Schema.json`;
+        const directory = `./debug/data/schema`;
+        fs.promises.mkdir(directory, { recursive: true }).catch(console.error);
+        const path = `${directory}/${this.SObjectName}_Schema.json`;
         fs.writeFileSync(path, objectDetails);
+        console.log("Done Updating file!");
     }
 }

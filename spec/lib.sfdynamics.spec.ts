@@ -22,6 +22,7 @@ test('SfRecodDetailsPage - Create Account via generalized fill method', async ( 
     const sfObjectName: string = 'Account';
 
     const newAccountModal: SfRecordDetailsPage = await SfRecordDetailsPage.initToNewRecord(page, sfObjectName);
+    await newAccountModal.fillByLabel('DavidsMultiSelectField', ["One", "Two", "Three", "Thirty-seven", "Forty", "Forty-one", "Ninety-four"]); 
     await newAccountModal.fillByLabel('IsDavidsFavorite', true);
     await newAccountModal.fillByLabel('Upsell Opportunity', 'No');
     await newAccountModal.fillByLabel('Account Name', testName);
@@ -30,13 +31,13 @@ test('SfRecodDetailsPage - Create Account via generalized fill method', async ( 
     await newAccountModal.fillByLabel('Account Site', `www.mysite.com`);
     await newAccountModal.fillByLabel('Parent Account', 'Davids Swiss Bank Account');
     await newAccountModal.fillByLabel('Rating', 'Hot');
-    await newAccountModal.fillByLabel('DavidsMultiSelectField', ["One", "Two", "Three", "Thirty-seven", "Forty", "Forty-one", "Ninety-four"]); 
     await newAccountModal.save(testName, "Name");
 });
 
 test(`SfRecodDetailsPage - Create Account via individual fill methods`, async ( { page }) => {
 
   const newAccountModal: SfRecordDetailsPage = await SfRecordDetailsPage.initToNewRecord(page, "Account");
+  await newAccountModal.fillMultiSelect('DavidsMultiSelectField', ["One", "Two", "Three"]);
   const testAccountName = `AccountName${Date.now()}`;
   await newAccountModal.fillCheckbox('IsDavidsFavorite', true);
   await newAccountModal.fillTextField('Account Name', testAccountName);
@@ -45,7 +46,6 @@ test(`SfRecodDetailsPage - Create Account via individual fill methods`, async ( 
   await newAccountModal.fillTextField('Account Site', `Test Site ${Date.now()}`);
   await newAccountModal.fillSearchField('Parent Account', 'Davids Swiss Bank Account');
   await newAccountModal.fillCombobox('Rating', 'Hot');
-  await newAccountModal.fillMultiSelect('DavidsMultiSelectField', ["One", "Two", "Three"]);
 
 
   

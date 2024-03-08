@@ -340,8 +340,9 @@ export class SfRecordDetailsPage
     async fillMultiSelect(label: string, selections: string[], fromPsudoColumn: "Available" | "Chosen" = "Available") {
         const toPsudoColumn: "Available" | "Chosen" = fromPsudoColumn == "Available" ? "Chosen" : "Available";
         const sourceItemsLocator = this.multiSelectListItemsLocator(label, fromPsudoColumn);
-        await expect(sourceItemsLocator.first()).toBeVisible();
         const moveToButtonLocator = this.multiSelectMoveToButtonLocator(label, toPsudoColumn);
+        await moveToButtonLocator.focus();
+        await expect(sourceItemsLocator.first()).toBeVisible();
         const selectionsAlreadySelected = await this.readMultiSelectItems(label, toPsudoColumn);
         const selectionsNotYetSelected = selections.filter((sel) => !selectionsAlreadySelected.includes(sel));
 

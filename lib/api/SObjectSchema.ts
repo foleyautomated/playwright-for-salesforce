@@ -28,20 +28,9 @@ export default class SObjectSchema
                 const sObjectDescription: DescribeSObjectResult = metadata;
                 const schema = new SObjectSchema(sObjectName, sObjectDescription);
                 resolve(schema);
+                schema.updateLocalObjectSchema();
             });
         });
-
-
-        // let schema: SObjectSchema;
-        // const conn = await SfConnection.open();
-        // await conn.sobject(sObjectName).describe(function(err, metadata) { 
-        //     if (err) { return console.error(err); }
-        //     const sObjectDescription: DescribeSObjectResult = metadata; 
-        //     sObjectDescription.fields.filter((f) => f.label + f.type );
-        //     schema = new SObjectSchema(sObjectName, sObjectDescription);
-        // });
-        // resolve(schema);
-        // return schema;
 
     }
 
@@ -50,14 +39,22 @@ export default class SObjectSchema
     } 
     getFieldInfoByLabel(label: string) : Field {
         const fieldInfo: Field = (this.SObjectDescription).fields
-            .filter((f) => f.label.includes(label))
+            .filter((f) => 
+                f.label.includes(label)
+                || 
+                f.label.includes(label.replace(this.SObjectName, "").trim()) //'Opportunity Name' is just 'Name' in the API 
+            )
             .sort((f) =>  f.label.length - label.length) //The GUI has "Parent Account" and the API has "Parent Account ID"; here we take the most similar label.
             [0]; 
         return fieldInfo;
     }
     getFieldInfoByName(name: string) : Field {
         const fieldInfo: Field = (this.SObjectDescription).fields
-            .filter((f) => f.name.includes(name))
+            .filter((f) => 
+                f.name.includes(name) 
+                || 
+                f.name.includes(name.replace(this.SObjectName, "").trim())
+                ) 
             [0]; 
         return fieldInfo;
     }

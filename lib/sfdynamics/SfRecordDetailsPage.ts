@@ -67,7 +67,7 @@ export class SfRecordDetailsPage
     }
 
 
-    async fillByLabel(label: string, value: object | string | Date | boolean | string[]) : Promise<void> {
+    async fillByLabel(label: string, value: object | string | Date | boolean | number | string[]) : Promise<void> {
         const fieldType: FieldType = (this.sObjSchema).getTypeOfLabel(label);
         console.log(`Filling label: '${label}' of type: <${fieldType}> with value: '${value.toString()}'`)
         switch (fieldType) {
@@ -94,7 +94,10 @@ export class SfRecordDetailsPage
                 if(value instanceof Date)
                 {
                     await this.fillDateInput(label, value);
-                } 
+                } else if (value instanceof string) 
+                {
+                    await this. 
+                }
                 else
                 {
                     await this.fillDateInput(label,  new Date(Date.parse(value.toString())));
@@ -144,7 +147,7 @@ export class SfRecordDetailsPage
                 await this.fillCombobox(label, value.toString());
                 break;
             case "multipicklist":
-                const multiPicklistItems: string[] = value.toString().split(";");
+                const multiPicklistItems: string[] = value instanceof Array ? value : value.toString().split(";");
                 await this.fillMultiSelect(label, multiPicklistItems);
                 break;
             case "anyType":
@@ -383,7 +386,7 @@ export class SfRecordDetailsPage
         console.log(`Modal for ${this.sObjName} Located`);
         return modalBody;
     }
-    async save(whereValue: string, whereProperty: string='Name') {
+    async save(whereProperty: string='Name', whereValue: string) {
         await (this.bottomButtonLocator('Save')).click();
         const conn = await SaleforceConnection.open();
         await expect(async () => {

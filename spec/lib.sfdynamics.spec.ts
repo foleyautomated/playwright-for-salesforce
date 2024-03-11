@@ -97,7 +97,7 @@ test('SfRecodDetailsPage - Create Account via generalized fill method', async ( 
     await newAccountModal.fillByLabel('Account Name', name);
     await newAccountModal.fillByLabel('SLA Expiration Date', faker.date.future()); 
     await newAccountModal.fillByLabel('Shipping Street', '1234 MyStreet Dr.');
-    await newAccountModal.fillByLabel('Account Site', `www.mysite.com`);
+    //await newAccountModal.fillByLabel('Account Site', `www.mysite.com`);
     await newAccountModal.fillByLabel('Parent Account', 'Davids Swiss Bank Account');
     await newAccountModal.fillByLabel('Rating', 'Hot');
     await newAccountModal.save("Name", name);

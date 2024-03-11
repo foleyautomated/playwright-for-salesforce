@@ -94,9 +94,9 @@ export class SfRecordDetailsPage
                 if(value instanceof Date)
                 {
                     await this.fillDateInput(label, value);
-                } else if (value instanceof string) 
+                } else if (value instanceof String) 
                 {
-                    await this. 
+                   await this.fillDateInput(label, new Date(value.toString())); //TODO: Does this work?
                 }
                 else
                 {

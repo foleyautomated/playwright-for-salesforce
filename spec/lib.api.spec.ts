@@ -8,13 +8,6 @@ import * as fs from 'fs';
 import SObjectInstance from '../lib/api/SObjectInstance';
 import SObjectSchema from '../lib/api/SObjectSchema';
 
-
-
-
-
-
-
-
 test('Create New Account via API', async () => {
 
   //TODO - Abstract out API Object creation to use a callback that returns the id

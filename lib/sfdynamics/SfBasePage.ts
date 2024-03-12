@@ -11,10 +11,12 @@ import SfRecordViewPage from './SfRecordViewPage';
 export class SfBasePage
 {
     readonly globalSearch: Locator
-
     private constructor(
-        public readonly page: Page) {
+        public readonly page: Page
+        ) {
         this.globalSearch = page.getByPlaceholder('Search Setup');
+
+
     }
 
     //static initializers
@@ -24,11 +26,30 @@ export class SfBasePage
         return basePage;
     }
 
+    async GotoSfApp(appName: string): Promise<void> {
+        const appsButton = this.page.locator('.slds-icon-waffle'); 
+        await appsButton.click();
+        const appsPopup = this.page.locator('one-app-launcher-menu');
+        const searchAppsAndItemsField: Locator = this.page.getByPlaceholder('Search apps and items...');
+        await searchAppsAndItemsField.fill(appName);
+        const appItems: Locator = appsPopup.locator('one-app-launcher-menu-item').locator('p')
+    }
+
+    //
+
+    // public static async initToApp(page: Page, appName: String) : Promise<SfBasePage> {
+    //     let appPage = this.initToHome(page);
+    // }
+
     //convenience methods
     async gotoRecentlyViewed(sfObjectName: string) : Promise<SfRecentlyViewedPage> {
         const recentlyViewedPage = SfRecentlyViewedPage.init(this.page, sfObjectName);
         return recentlyViewedPage;
     }
+
+    // async gotoApp(appName: string) : Promise<SfRecentlyViewedPage> {
+
+    // }
 
 
 

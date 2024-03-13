@@ -15,6 +15,8 @@ import * as Path from 'path';
 
 test('SfRecordDetailsPage - Create New Account ', async ( { page })  => {
   let sObject = "Account";
+
+  let home = await SfBasePage.initToHome(page, "Sales");  
   let myobj = await SfObjectInstance.initFromSalesForce(sObject);
   myobj.labelsToValues["Shipping City"] = "Denver"
   const detailsPage = await SfRecordDetailsPage.initToNewRecord(page, sObject);

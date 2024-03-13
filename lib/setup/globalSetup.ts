@@ -12,7 +12,7 @@ async function globalSetup(config: FullConfig) {
   const ageOfStorageStateInMinutes = getFileAgeInMinutes(storageStateFilePath);
 
   
-  if(ageOfStorageStateInMinutes > 0)//Number(process.env.MAX_AGE_OF_CONTEXT_IN_MINS))
+  if(ageOfStorageStateInMinutes > Number(process.env.MAX_AGE_OF_CONTEXT_IN_MINS))
   {
     console.log(`Refreshing browser state because the existing saved state is ${ageOfStorageStateInMinutes} mins old.`);
     const browser = await chromium.launch();

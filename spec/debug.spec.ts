@@ -1,5 +1,5 @@
 import { test, expect, request } from '@playwright/test';
-import { SfBasePage } from '../lib/sfdynamics/SfBasePage';
+import SfBasePage from '../lib/sfdynamics/SfBasePage';
 import { SfRecentlyViewedPage } from '../lib/sfdynamics/SfRecentlyViewedPage';
 import { SfRecordDetailsPage } from '../lib/sfdynamics/SfRecordDetailsPage';
 import SfObjectInstance from '../lib/api/SObjectInstance';

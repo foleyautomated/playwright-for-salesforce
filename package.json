@@ -1,7 +1,7 @@
 {
   "name": "playwright-salesforce",
   "version": "1.0.0",
-  "description": "",
+  "description": "`https://nodejs.org/en/download`",
   "main": "index.js",
   "scripts": {},
   "keywords": [],
@@ -29,5 +29,8 @@
     "reflect-metadata": "^0.2.1",
     "ts-force": "^3.4.3",
     "ts-force-gen": "^3.4.1"
+  },
+  "directories": {
+    "lib": "lib"
   }
 }

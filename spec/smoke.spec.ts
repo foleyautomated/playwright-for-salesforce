@@ -3,7 +3,7 @@ import { SfBasePage } from '../lib/sfdynamics/SfBasePage';
 import { SfRecentlyViewedPage } from '../lib/sfdynamics/SfRecentlyViewedPage';
 import { SfRecordDetailsPage } from '../lib/sfdynamics/SfRecordDetailsPage';
 import { faker } from '@faker-js/faker';
-import SalesforceConnecter from '../lib/api/SalesforceConnecter'
+import jsfConnecter from '../lib/api/JsfConnecter'
 import SfRecordViewPage from '../lib/sfdynamics/SfRecordViewPage';
 import { QueryResult } from 'jsforce';
 

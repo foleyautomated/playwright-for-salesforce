@@ -1,6 +1,6 @@
 /* eslint-disable @typescript-eslint/no-unsafe-member-access */
 import { meta } from "@typescript-eslint/eslint-plugin";
-import SalesforceConnecter from "./SalesforceConnecter";
+import jsfConnecter from "./JsfConnecter";
 import * as fs from 'fs';
 import { ActionOverride, ChildRelationship, DescribeSObjectResult, Field, FieldType, NamedLayoutInfo, RecordTypeInfo, ScopeInfo, maybe } from "jsforce/describe-result";
 
@@ -16,7 +16,7 @@ export default class SObjectSchema
 
     public static async init(sObjectName: string) : Promise<SObjectSchema>
     {
-        const conn = await SalesforceConnecter.open();
+        const conn = await jsfConnecter.openViaUsernameAndPass();
         
         return new Promise<SObjectSchema>((resolve, reject) => {
             conn.sobject(sObjectName).describe((err, metadata) => {

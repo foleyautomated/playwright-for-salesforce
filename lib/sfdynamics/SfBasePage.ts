@@ -12,7 +12,7 @@ import { base } from '@faker-js/faker';
 export default class SfBasePage
 {
     readonly globalSearch: Locator
-    private constructor(
+    constructor(
         public readonly page: Page
         ) {
         this.globalSearch = page.getByPlaceholder('Search Setup');
@@ -23,7 +23,7 @@ export default class SfBasePage
     //static initializers
     public static async initToHome(page: Page, sfAppName: string) : Promise<SfBasePage> {
         const basePage = new SfBasePage(page);
-        await basePage.page.goto(process.env.SF_GUI_BASE_LIGHTNING_URL!);
+        await basePage.page.goto(process.env.SF_GUI_BASE_LIGHTNING_URL!, {timeout: 20000});
         await basePage.gotoSfApp(sfAppName);
         return basePage;
     }
@@ -64,7 +64,7 @@ export default class SfBasePage
     //TODO: Simplify
     async readCurrentSfAppName() : Promise<string> {
         const sfAppNameTab = this.page.locator('.slds-context-bar__app-name');
-        await expect(sfAppNameTab).toHaveText(/.*\w+.*/);
+        await expect(sfAppNameTab).toHaveText(/.*\w+.*/, {timeout: 20000});
         const currentSfAppName = await sfAppNameTab.textContent();
         if(currentSfAppName == null)
         {

@@ -2,16 +2,19 @@ import { chromium, expect, type FullConfig } from '@playwright/test';
 import { SalesforceLoginPage} from '../pages/salesforceLoginPage'; 
 //import { SfBasePage } from '../sfdynamics/SfBasePage';
 import * as fs from 'fs';
+import path from 'path';
+import { fileURLToPath } from 'url';
+
 
 async function globalSetup(config: FullConfig) {
 
   console.log("Hello From globalSetup!");
 
-  const { baseURL, storageState } = config.projects[0].use;
-  const storageStateFilePath = '../debug/states/defaultStorageState.json';
-  const ageOfStorageStateInMinutes = getFileAgeInMinutes(storageStateFilePath);
 
-  
+
+  //const __dirname = path.dirname(fileURLToPath(import.meta.url));
+  const storageStateFilePath = `${process.cwd()}/debug/states/defaultStorageState.json`;
+  const ageOfStorageStateInMinutes = getFileAgeInMinutes(storageStateFilePath);
   if(
     true //TODO: FIx
     //ageOfStorageStateInMinutes == undefined ||
@@ -21,10 +24,8 @@ async function globalSetup(config: FullConfig) {
     console.log(`Refreshing browser state because the existing saved state is ${ageOfStorageStateInMinutes} mins old.`);
     const browser = await chromium.launch();
     const page = await browser.newPage();
-    await page.goto(baseURL!);
-    const salesforcePage = new SalesforceLoginPage(page);
+    const salesforcePage = await SalesforceLoginPage.init(page);
     await salesforcePage.login(process.env.SALESFORCE_USERNAME!, process.env.SALESFORCE_PASSWORD!);
-    await expect(page).toHaveURL(/lightning/);
     //TODO: Deal with 'verify code sent to blah blah email'
     await page.context().storageState({ path: storageStateFilePath});
     await browser.close();

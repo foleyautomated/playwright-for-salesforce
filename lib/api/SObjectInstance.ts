@@ -1,6 +1,6 @@
 /* eslint-disable @typescript-eslint/no-unsafe-member-access */
 import { meta } from "@typescript-eslint/eslint-plugin";
-import SalesforceConnecter from "./SalesforceConnecter";
+import jsfConnecter from "./JsfConnecter";
 import { promises as fsPromises } from 'fs';
 import fs from 'fs';
 import * as Path from 'path';
@@ -33,7 +33,7 @@ export default class SObjectInstance
 
 
         const schema = await SObjectSchema.init(sObjectName);
-        const conn = await SalesforceConnecter.open();
+        const conn = await jsfConnecter.openViaUsernameAndPass();
         if(!id) {
             const maxRecords = 200;
             const results = await conn.query<{Id: string}>(`SELECT FIELDS(ALL) FROM ${sObjectName} LIMIT ${maxRecords}`);

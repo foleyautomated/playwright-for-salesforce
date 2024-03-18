@@ -4,7 +4,7 @@ import { SfBasePage} from './SfBasePage';
 import { format } from 'path';
 import SObjectSchema from '../api/SObjectSchema';
 import { FieldType, QueryResult } from 'jsforce';
-import SaleforceConnection from '../api/SalesforceConnecter'
+import SaleforceConnection from '../api/JsfConnecter'
 import LabelToValue from '../api/SObjectInstance';
 import SObjectInstance from '../api/SObjectInstance';
 import { SfRecentlyViewedPage } from './SfRecentlyViewedPage';
@@ -388,7 +388,7 @@ export class SfRecordDetailsPage
     }
     async save(whereProperty: string='Name', whereValue: string) {
         await (this.bottomButtonLocator('Save')).click();
-        const conn = await SaleforceConnection.open();
+        const conn = await SaleforceConnection.openViaUsernameAndPass();
         await expect(async () => {
           const results = await conn.query<{Id: string}>(`SELECT FIELDS(ALL) FROM ${this.sObjName} WHERE ${whereProperty} = '${whereValue}' LIMIT 200`);
           expect(results.records[0]).toBeDefined();

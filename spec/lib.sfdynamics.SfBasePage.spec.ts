@@ -9,7 +9,6 @@ let sfApps = ["Sales", "Service", "Marketing CRM Classic", "Community", "Salesfo
 for(let app of sfApps)
 {
     test(`Switch Between Sf Apps ${app}`, async ( { page })  => {
-        
         let salesPage = await SfBasePage.initToHome(page, app);  
         salesPage.ensureCurrentSfAppName(app);
     });

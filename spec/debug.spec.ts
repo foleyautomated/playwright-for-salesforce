@@ -4,7 +4,7 @@ import { SfRecentlyViewedPage } from '../lib/sfdynamics/SfRecentlyViewedPage';
 import { SfRecordDetailsPage } from '../lib/sfdynamics/SfRecordDetailsPage';
 import SfObjectInstance from '../lib/api/SObjectInstance';
 import { faker } from '@faker-js/faker';
-import SaleforceConnection from '../lib/api/SalesforceConnecter';
+import SaleforceConnection from '../lib/api/JsfConnecter';
 import { promises as fsPromises } from 'fs';
 import fs from 'fs';
 import * as Path from 'path';
@@ -30,7 +30,7 @@ test('SfRecordDetailsPage - Create New Account ', async ( { page })  => {
 
 
 test('Try different SOQL Queries Here', async () => {
-  const conn = await SaleforceConnection.open();
+  const conn = await SaleforceConnection.openViaUsernameAndPass();
   const query = `SELECT  QualifiedApiName FROM EntityDefinition order by QualifiedApiName`;
   const result = await conn.query<{Id: string}>(query);
 

@@ -8,3 +8,4 @@ storageState.json
 /playwright-report/
 /playwright/.cache/
 /debug/
+.prettierrc

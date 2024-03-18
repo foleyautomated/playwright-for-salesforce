@@ -1,5 +1,4 @@
 import { Locator, Page, expect } from "@playwright/test";
-import { SfBasePage } from "./SfBasePage";
 import { SfRecordDetailsPage } from "./SfRecordDetailsPage";
 import SObjectSchema from "../api/SObjectSchema";
 

@@ -127,11 +127,15 @@ test('SfRecordDetailsPage - Copy and Modify an Account ', async ( { page })  => 
 
   let myobj = await SObjectInstance.initFromSalesForce(sObject);
   //myobj.labelsToValues.set("Subject", "New Test Subject!");
-  myobj.labelsToValues["Shipping City"] = "Denver"
+  const update = { field: "Website", value: faker.internet.domainName() };
+  myobj.labelsToValues[update.field] = update.value;
+
+  console.log(myobj.labelsToValues["Account Name"]);
+
   const detailsPage = await SfRecordDetailsPage.initToNewRecord(page, sObject);
 
   await detailsPage.fillBySObjectInstance(myobj);
-  await detailsPage.save("Shipping City", "Denver")
+  await detailsPage.save(update.field, update.value);
 
   console.log("done!");
   

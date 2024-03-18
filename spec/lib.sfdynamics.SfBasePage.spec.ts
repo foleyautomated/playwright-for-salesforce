@@ -13,4 +13,3 @@ for(let app of sfApps)
         salesPage.ensureCurrentSfAppName(app);
     });
 }
-

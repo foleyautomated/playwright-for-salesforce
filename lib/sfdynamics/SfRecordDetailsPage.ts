@@ -1,5 +1,4 @@
 import {Page, Locator, expect} from '@playwright/test';
-import { SfBasePage} from './SfBasePage';
 //import { text } from 'stream/consumers';
 import { format } from 'path';
 import SObjectSchema from '../api/SObjectSchema';
@@ -178,7 +177,9 @@ export class SfRecordDetailsPage
     //Generalized Locators
     
     async getAllVisibleLabels(): Promise<string[]> {
-        const allVisibleLabels = await this.allFieldLabelsLocator().allTextContents();
+        // TODO : Move this fix upstream to allFieldLabelsLocator, maybe it can just ignore '*' when locating labels of required fields
+        const allVisibleLabels = (await this.allFieldLabelsLocator().allTextContents())
+            .map((label) => { return label.replace('*', '')});
         return allVisibleLabels;
     } 
 

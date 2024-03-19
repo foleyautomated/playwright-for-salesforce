@@ -81,8 +81,9 @@ test('SfRecodDetailsPage - Create Opportunity via generalized fill method', asyn
   await newContactModal.fillByLabel('Opportunity Name', oppName);
   await newContactModal.fillByLabel("Close Date", '3/8/2024');
   await newContactModal.fillByLabel("Stage", 'Prospecting');
-  await newContactModal.fillByLabel("Probability (%)", 0.1); 
-  await newContactModal.save('Opportunity Name', oppName);
+  await newContactModal.fillByLabel("Probability (%)", 0.1);
+  const fieldName = newContactModal.sObjSchema.getFieldInfoByLabel('Opportunity Name').name;
+  await newContactModal.save(fieldName, oppName);
 });
 
 

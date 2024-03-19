@@ -40,7 +40,7 @@ export default defineConfig({
   use: {
     /* Base URL to use in actions like `await page.goto('/')`. */
     baseURL: 'https://agilitypartners-dev-ed.develop.lightning.force.com/lightning',
-    storageState: `${process.cwd()}/debug/states/defaultStorageState.json`,
+    storageState: `${process.cwd()}/debug/browser/default_browser_state.json`,
     /* Collect trace when retrying the failed test. See https://playwright.dev/docs/trace-viewer */
     trace: 'on-first-retry'
   },

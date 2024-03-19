@@ -39,13 +39,12 @@ export default class jsfConnecter {
 				console.log('Org ID: ' + userInfo.organizationId);
 				// ...
 			}
-		)
-			.then(() => {
-				console.log('successfully logged into salesforce');
-			})
-			.catch(() => {
-				console.log('failed to login to salesforce');
-			});
+		).then(() => {
+			console.log('Successfully logged into Salesforce via OAuth2');
+		}).catch(() => {
+			console.log('Failed to login to Salesforce via OAuth2');
+			throw new Error('Failed to login to Salesforce via OAuth2')
+		});
 
 		return conn;
 	}
@@ -60,8 +59,12 @@ export default class jsfConnecter {
 		await conn.login(
 			process.env.SALESFORCE_USERNAME!,
 			process.env.SALESFORCE_PASSWORD! + process.env.SF_ACCESS_TOKEN
-		);
-		console.log('Connected to Salesforce.');
+		).then(() => {
+			console.log('Successfully logged into Salesforce via Username and Password');
+		}).catch(() => {
+			console.log('Failed to login to Salesforce via Username and Password');
+			throw new Error('Failed to login to Salesforce via Username and Password')
+		});
 		return conn;
 	}
 

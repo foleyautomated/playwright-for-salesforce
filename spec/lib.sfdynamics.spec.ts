@@ -41,6 +41,8 @@ for (const sob of testSObjects)
 
 
 test(`SfRecodDetailsPage - Create Account via individual fill methods`, async ( { page }) => {
+  test.slow();
+
   const sfObjectName: string = 'Account';
   
   const newAccountModal: SfRecordDetailsPage = await SfRecordDetailsPage.initToNewRecord(page, sfObjectName);
@@ -58,6 +60,8 @@ test(`SfRecodDetailsPage - Create Account via individual fill methods`, async ( 
 
 
 test('SfRecodDetailsPage - Create Contact via generalized fill method', async ( { page }) => {
+  test.slow();
+  
   const sfObjectName: string = 'Contact';
   const title = testName();
 
@@ -74,6 +78,8 @@ test('SfRecodDetailsPage - Create Contact via generalized fill method', async ( 
 });
 
 test('SfRecodDetailsPage - Create Opportunity via generalized fill method', async ( { page }) => {
+  test.slow();
+  
   const sfObjectName: string = 'Opportunity';
   const oppName = testName();
 
@@ -88,6 +94,8 @@ test('SfRecodDetailsPage - Create Opportunity via generalized fill method', asyn
 
 
 test('SfRecodDetailsPage - Create Account via generalized fill method', async ( { page }) => {
+  test.slow();
+  
     const sfObjectName: string = 'Account';
     const name = testName();
 
@@ -107,6 +115,8 @@ test('SfRecodDetailsPage - Create Account via generalized fill method', async ( 
 
 
 test('SfRecodDetailsPage - Read and Modify existing Account', async ( {page} ) => {
+  test.slow();
+  
   const testName = `Test Name ${Date.now()}`;
   console.log("Test Name: " + testName);
   const sfObjectName: string = 'Account';
@@ -124,6 +134,8 @@ test('SfRecodDetailsPage - Read and Modify existing Account', async ( {page} ) =
 });
 
 test('SfRecordDetailsPage - Copy and Modify an Account ', async ( { page })  => {
+  test.slow();
+  
   let sObject = "Account";
 
   let myobj = await SObjectInstance.initFromSalesForce(sObject);

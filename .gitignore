@@ -9,3 +9,4 @@ storageState.json
 /playwright/.cache/
 /debug/
 .prettierrc
+setup.spec.ts

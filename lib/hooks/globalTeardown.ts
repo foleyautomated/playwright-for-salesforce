@@ -1,6 +1,5 @@
-// import { test as teardown } from '@playwright/test';
+import { type FullConfig } from "@playwright/test";
 
-// teardown('Cleanup Browsers', async ({ page }) => {
-//     console.log('Closing Browser...');
-//     page.close();
-// });
+export default async function globalTeardown(config: FullConfig) {
+    console.log('GLOBAL TEARDOWN');
+}

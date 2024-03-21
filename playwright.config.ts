@@ -46,7 +46,7 @@ export default defineConfig({
   },
   
   globalSetup: `${process.cwd()}/lib/hooks/globalSetup.ts`,
-  //globalTeardown: `${process.cwd()}/lib/hooks/globalTeardown.ts`, //TODO: Fix this
+  globalTeardown: `${process.cwd()}/lib/hooks/globalTeardown.ts`,
   
   /* Configure projects for major browsers */
   projects: [

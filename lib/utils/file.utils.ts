@@ -16,9 +16,23 @@ export function createDirIfNotExists(path: string) {
 export function writeSchemaFile(filename: string, schema: string) {
     const path = Path.join(DATA_SCHEMA_DIR, filename);
     try {
+        console.debug(`Writing local schema file: ${path}`);
         fs.writeFileSync(path, schema);
-        console.debug(`Wrote local schema file: ${filename}`);
+        console.debug(`Wrote local schema file: ${path}`);
     } catch (err: any) {
-        console.error(`Failed to write local schema file: ${filename}`);
+        console.error(`Failed to write local schema file: ${path}`);
+    }
+}
+
+export function writeInstanceFile(sObjectName: string, filename: string, instance: string) {
+    const dirname = Path.join(DATA_INSTANCE_DIR, sObjectName);
+    createDirIfNotExists(dirname);
+    const path = Path.join(dirname, filename);
+    try {
+        console.debug(`Writing local instance file: ${path}`);
+        fs.writeFileSync(path, instance);
+        console.debug(`Wrote local instance file: ${path}`);
+    } catch (err: any) {
+        console.error(`Failed to write local instance file: ${path}`);
     }
 }

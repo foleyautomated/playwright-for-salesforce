@@ -1,6 +1,6 @@
 import { chromium, type FullConfig } from '@playwright/test';
-import { SalesforceLoginPage} from '../pages/salesforceLoginPage'; 
-import { STORAGE_STATE } from '../../playwright.config';
+import * as Env from '../config/env.config';
+import { SalesforceLoginPage} from '../pages/salesforceLoginPage';
 import { getFileAgeInMinutes } from '../utils/file.utils';
 
 /**
@@ -21,7 +21,7 @@ export default async function globalSetup(config: FullConfig) {
  * @param stateDir Directory to store browser states in
  */
 async function initializeBrowserState() {
-	const browserStatePath = STORAGE_STATE;
+	const browserStatePath = Env.DEFAULT_STORAGE_STATE;
 	const browserStateAge = getFileAgeInMinutes(browserStatePath);
 	const browserStateMaxAge = Number(process.env.MAX_AGE_OF_CONTEXT_IN_MINS);
 	if (browserStateAge == -1 || browserStateAge > browserStateMaxAge) {

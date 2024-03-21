@@ -3,8 +3,7 @@ import { meta } from "@typescript-eslint/eslint-plugin";
 import jsfConnecter from "./JsfConnecter";
 import * as fs from 'fs';
 import { ActionOverride, ChildRelationship, DescribeSObjectResult, Field, FieldType, NamedLayoutInfo, RecordTypeInfo, ScopeInfo, maybe } from "jsforce/describe-result";
-
-
+import { writeSchemaFile } from "../utils/file.utils";
 
 export default class SObjectSchema
 {
@@ -60,12 +59,10 @@ export default class SObjectSchema
     }
 
     updateLocalObjectSchema() {
-        //TODO: Would Ideally be async
-        const objectDetails = JSON.stringify(this.SObjectDescription, null, 2);
-        const directory = `./debug/data/schema`;
-        fs.promises.mkdir(directory, { recursive: true }).catch(console.error);
-        const path = `${directory}/${this.SObjectName}_Schema.json`;
-        fs.writeFileSync(path, objectDetails);
-        console.log("Done Updating file!");
+        // NOTE : Making this async would create the risk of a race condition
+        writeSchemaFile(
+            `${this.SObjectName}_Schema.json`,
+            JSON.stringify(this.SObjectDescription, null, 2)
+        );
     }
 }

@@ -1,6 +1,6 @@
 import { chromium, type FullConfig } from '@playwright/test';
 import { SalesforceLoginPage} from '../pages/salesforceLoginPage'; 
-import path from 'path';
+import { STORAGE_STATE } from '../../playwright.config';
 import { getFileAgeInMinutes } from '../utils/file.utils';
 
 /**
@@ -9,10 +9,9 @@ import { getFileAgeInMinutes } from '../utils/file.utils';
  * @param config Full configuration defined in playwright.config.ts
  */
 export default async function globalSetup(config: FullConfig) {
-	const stateDir = path.join(process.cwd(), '/debug');
 
 	// Initialize project modules
-	await initializeBrowserState(stateDir);
+	await initializeBrowserState();
 }
 
 /**
@@ -21,8 +20,8 @@ export default async function globalSetup(config: FullConfig) {
  * 
  * @param stateDir Directory to store browser states in
  */
-async function initializeBrowserState(stateDir: string) {
-	const browserStatePath = path.join(stateDir, '/browser/default_browser_state.json');
+async function initializeBrowserState() {
+	const browserStatePath = STORAGE_STATE;
 	const browserStateAge = getFileAgeInMinutes(browserStatePath);
 	const browserStateMaxAge = Number(process.env.MAX_AGE_OF_CONTEXT_IN_MINS);
 	if (browserStateAge == -1 || browserStateAge > browserStateMaxAge) {

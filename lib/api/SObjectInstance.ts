@@ -8,6 +8,7 @@ import { ActionOverride, ChildRelationship, DescribeSObjectResult, Field, FieldT
 import { RecordAttributes, SObject } from "jsforce";
 import SObjectSchema from "./SObjectSchema"
 import { max } from "date-fns";
+import { writeInstanceFile } from "../utils/file.utils";
 
 export type LabelToValue =  { [key: string]: any };
 
@@ -60,25 +61,18 @@ export default class SObjectInstance
         
         instance = new SObjectInstance(sObjectName, id, schema, labelsToValues);
         //labelsToValues.delete("attributes") //Unwanted Metadata
-        await instance.saveLocal();
+        instance.saveLocal();
         return instance;
     }
 
 
     public static async initFromJson(){ throw new Error("Not yet implemented")} //TODO: Implement Initialization from file
 
-    public async saveLocal(filePath: string = "") : Promise<void>{
-        const defaultOutputPath = `debug/data/instance/${this.sObjectName}/${this.sObjectId}.json`;
-        const outputPath = Path.resolve(filePath ? filePath : defaultOutputPath);
-
-        const objectDetails: string = JSON.stringify(this.labelsToValues, null, 2);
-        const objectDirectory = Path.dirname(outputPath);
-        await fsPromises.mkdir(objectDirectory, {recursive: true});
-        console.log("Writing to '" + outputPath + "' : " + objectDetails)
-        fs.writeFileSync(outputPath, objectDetails);
-        console.log("File Write Complete!")
+    public saveLocal() {
+        writeInstanceFile(
+            this.sObjectName,
+            `${this.sObjectId}.json`,
+            JSON.stringify(this.labelsToValues, null, 2)
+        );
     }
-
-
-
 }
